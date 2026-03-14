@@ -1,3 +1,0 @@
-mcp
-neo4j
-# Mermaid/Kroki: nur Python-Stdlib nötig (base64, zlib, urllib) – keine extra Pakete
