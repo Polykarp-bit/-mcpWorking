@@ -1,0 +1,16 @@
+# Lokale MCP-Konfiguration (enthält Neo4j-Passwort) – nicht ins Repo
+cursor-mcp-config.json
+
+# Python
+.venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+
+# IDE / OS
+.idea/
+.DS_Store
+*.swp
+*.swo
