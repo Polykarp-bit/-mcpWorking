@@ -1,108 +1,33 @@
 from __future__ import annotations
 
 import base64
-import logging
-import os
 import re
-import time
 import urllib.error
 import urllib.request
 import zlib
-from typing import Any, Dict, List, Tuple
+from typing import Any, Dict, List
 
-from mcp.server.fastmcp import FastMCP
-from neo4j import GraphDatabase
-from neo4j.exceptions import ServiceUnavailable, SessionExpired
-
-# ---------------------------------------------------------------------------
-# Logging (QA-MA-02, QA-MA-04 – Semantic Interaction Logging)
-# ---------------------------------------------------------------------------
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s [%(levelname)s] %(name)s – %(message)s",
-    datefmt="%Y-%m-%d %H:%M:%S",
+from .core import (
+    logger,
+    mcp,
+    _MAX_INPUT_LEN,
+    _clean_content,
+    _extract_title_and_content,
+    _format_doc,
+    _format_error,
+    _get_driver,
+    _run_read,
+    _run_write,
+    _safe_str,
 )
-logger = logging.getLogger("mcp.arc42")
-
-# ---------------------------------------------------------------------------
-# MCP Server Instance
-# ---------------------------------------------------------------------------
-mcp = FastMCP("arc42doc MCP Server")
-
-
-# ---------------------------------------------------------------------------
-# Configuration via Environment Variables (QA-PO-02)
-# ---------------------------------------------------------------------------
-def _env(name: str, default: str) -> str:
-    val = os.getenv(name)
-    return val if val is not None and val != "" else default
-
-
-NEO4J_URI = _env("NEO4J_URI", "bolt://localhost:7687")
-NEO4J_USER = _env("NEO4J_USER", "neo4j")
-NEO4J_PASSWORD = _env("NEO4J_PASSWORD", "yourPassword")
-
-# ---------------------------------------------------------------------------
-# Neo4j Service – Data Access Layer (QA-MA-01 Protocol/Logic Separation)
-# ---------------------------------------------------------------------------
-_MAX_RECONNECT_ATTEMPTS = 3
-_RECONNECT_DELAY_S = 1.0
-
-_driver = None
-
-
-def _get_driver():
-    """Get or create Neo4j driver with auto-reconnect (QA-RE-02)."""
-    global _driver
-    if _driver is None:
-        logger.info("Creating new Neo4j driver → %s", NEO4J_URI)
-        _driver = GraphDatabase.driver(NEO4J_URI, auth=(NEO4J_USER, NEO4J_PASSWORD))
-    # Verify connectivity; reconnect on failure
-    for attempt in range(1, _MAX_RECONNECT_ATTEMPTS + 1):
-        try:
-            _driver.verify_connectivity()
-            return _driver
-        except (ServiceUnavailable, SessionExpired, OSError) as exc:
-            logger.warning(
-                "Neo4j connectivity check failed (attempt %d/%d): %s",
-                attempt, _MAX_RECONNECT_ATTEMPTS, exc,
-            )
-            if attempt < _MAX_RECONNECT_ATTEMPTS:
-                time.sleep(_RECONNECT_DELAY_S)
-                _driver = GraphDatabase.driver(
-                    NEO4J_URI, auth=(NEO4J_USER, NEO4J_PASSWORD)
-                )
-            else:
-                raise
-    return _driver
-
-
-def _run_read(cypher: str, **params) -> list:
-    """Execute a read query and return list of records (QA-RE-02 auto-reconnect)."""
-    driver = _get_driver()
-    with driver.session() as session:
-        result = session.run(cypher, **params)
-        return list(result)
-
-
-def _run_write(cypher: str, **params) -> list:
-    """Execute a write query inside a transaction (QA-RE-03 transactional writes)."""
-    driver = _get_driver()
-    with driver.session() as session:
-        def _tx(tx):
-            result = tx.run(cypher, **params)
-            return list(result)
-        return session.execute_write(_tx)
-
-
-# ---------------------------------------------------------------------------
-# Input Validation (QA-SE-04 – Semantic Validation of Tool Calls)
-# ---------------------------------------------------------------------------
-_MAX_INPUT_LEN = 10000
 
 
 def _validate_required(value: str, field_name: str) -> str:
-    """Validate that a required string field is not empty."""
+    """Validate that a required string field is not empty.
+
+    Note: kept in this module for backwards-compatibility with tests that
+    monkeypatch `_MAX_INPUT_LEN` on `neo4j_mcp_server.server`.
+    """
     v = str(value).strip() if value else ""
     if not v:
         raise ValueError(f"Parameter '{field_name}' darf nicht leer sein.")
@@ -111,89 +36,6 @@ def _validate_required(value: str, field_name: str) -> str:
             f"Parameter '{field_name}' ist zu lang ({len(v)} Zeichen, max {_MAX_INPUT_LEN})."
         )
     return v
-
-
-# ---------------------------------------------------------------------------
-# Content Cleaning (QA-PE-02 – Token Efficiency)
-# ---------------------------------------------------------------------------
-_HTML_TAG_RE = re.compile(r"<[^>]+>")
-
-
-def _clean_content(text: str) -> str:
-    """Remove HTML tags and excessive whitespace to save tokens."""
-    if not text:
-        return ""
-    text = _HTML_TAG_RE.sub("", text)
-    text = re.sub(r"\n{3,}", "\n\n", text)
-    return text.strip()
-
-
-# ---------------------------------------------------------------------------
-# Helpers
-# ---------------------------------------------------------------------------
-def _safe_str(x: Any, fallback: str = "") -> str:
-    if x is None:
-        return fallback
-    try:
-        s = str(x)
-        return s if s != "" else fallback
-    except Exception:
-        return fallback
-
-
-def _extract_title_and_content(node_data: Dict[str, Any], labels: List[str]) -> Tuple[str, str]:
-    """Extract title and content from node based on its labels and properties."""
-    title = ""
-    content = ""
-
-    for prop in ["title", "name", "begriff", "roleOrName", "konvention", "randbedingung", "aufgabe", "anforderung", "qualitaetsziel"]:
-        if prop in node_data and node_data[prop]:
-            title = str(node_data[prop])
-            break
-
-    for prop in ["content", "text", "beschreibung", "erlaeuterung", "hintergrund", "strategy", "loesung", "aufgabe"]:
-        if prop in node_data and node_data[prop]:
-            content = str(node_data[prop])
-            break
-
-    if "TextEingabe" in labels:
-        if "content" in node_data:
-            content = str(node_data["content"])
-            if "type" in node_data and node_data["type"] == "TITLE":
-                title = content
-                content = ""
-
-    if "Konzept" in labels:
-        if "name" in node_data:
-            title = str(node_data["name"])
-        if "text" in node_data:
-            content = str(node_data["text"])
-
-    if not title:
-        title = labels[0] if labels else "Untitled"
-
-    return title, _clean_content(content)
-
-
-def _format_doc(title: str, content: str, node_type: str = "") -> str:
-    title = title.strip() or "Untitled"
-    content = content.strip()
-    if not content:
-        content = "_(no content)_"
-
-    type_prefix = f"[{node_type}] " if node_type else ""
-    return f"## {type_prefix}{title}\n\n{content}\n"
-
-
-def _format_error(action: str, err: Exception) -> str:
-    """Return a structured error message the LLM can interpret (QA-RE-01)."""
-    logger.error("Action '%s' failed: %s – %s", action, type(err).__name__, err)
-    return (
-        "## Error\n\n"
-        f"**Action:** {action}\n\n"
-        f"**Cause:** `{type(err).__name__}`\n\n"
-        f"**Message:** {str(err)}\n"
-    )
 
 
 @mcp.tool()
@@ -573,7 +415,7 @@ def add_technical_context(description: str, *, parent_name: str) -> str:
     logger.info("Tool add_technical_context aufgerufen")
     try:
         _run_write(cypher, description=description, parent_name=parent_name)
-        return f"## Success\n\nAdded Technical Context.\n"
+        return "## Success\n\nAdded Technical Context.\n"
     except Exception as e:
         return _format_error("add_technical_context", e)
 
@@ -631,7 +473,7 @@ def add_solution_strategy(strategy: str, *, parent_name: str) -> str:
     logger.info("Tool add_solution_strategy aufgerufen")
     try:
         _run_write(cypher, strategy=strategy, parent_name=parent_name)
-        return f"## Success\n\nAdded Solution Strategy.\n"
+        return "## Success\n\nAdded Solution Strategy.\n"
     except Exception as e:
         return _format_error("add_solution_strategy", e)
 
@@ -2097,17 +1939,6 @@ def check_consistency_report(parent_name: str) -> str:
         return _format_error("check_consistency_report", e)
 
 
-# =========================================================================
-# Entry Point
-# =========================================================================
-def main():
-    logger.info("arc42doc MCP Server wird gestartet …")
-    mcp.run(transport="stdio")
-
-if __name__ == "__main__":
-    main()
-
-
 # --- Neu hinzugefuegte Tools (Dynamische Projekte) ---
 
 @mcp.tool()
@@ -2194,10 +2025,14 @@ def add_swot(parent_name: str, strength: str = "", weakness: str = "", opportuni
         added.append(f"- **{entry_type}**: {content.strip()}")
 
     try:
-        if strength: _add_single("STRENGTH", strength)
-        if weakness: _add_single("WEAKNESS", weakness)
-        if opportunity: _add_single("OPPORTUNITY", opportunity)
-        if threat: _add_single("THREAT", threat)
+        if strength:
+            _add_single("STRENGTH", strength)
+        if weakness:
+            _add_single("WEAKNESS", weakness)
+        if opportunity:
+            _add_single("OPPORTUNITY", opportunity)
+        if threat:
+            _add_single("THREAT", threat)
         
         if not added:
             return "## Warning\n\nKeine SWOT-Eintraege uebergeben.\n"
@@ -2269,6 +2104,18 @@ def delete_swot_entry(parent_name: str, entry_type: str, content: str) -> str:
         deleted = res[0]["c"] if getattr(res, "records", None) else res[0]["c"]
         if deleted > 0:
             return f"## Success\n\nDeleted SWOT Entry ({entry_type}): **{content[:50]}**\n"
-        return f"## Warning\n\nNo matching SWOT entry found.\n"
+        return "## Warning\n\nNo matching SWOT entry found.\n"
     except Exception as e:
         return _format_error("delete_swot_entry", e)
+
+
+# =========================================================================
+# Entry Point
+# =========================================================================
+def main(transport: str = "stdio"):
+    logger.info("arc42doc MCP Server wird gestartet …")
+    mcp.run(transport=transport)
+
+
+if __name__ == "__main__":
+    main()

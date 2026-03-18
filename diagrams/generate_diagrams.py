@@ -2,7 +2,11 @@
 Einmalig ausführen um alle arc42-Diagramme via Kroki API zu generieren.
 Ausführen mit: python3 generate_diagrams.py
 """
-import base64, zlib, urllib.request, urllib.error, os
+import base64
+import os
+import urllib.error
+import urllib.request
+import zlib
 
 def mermaid_to_png(code: str, output_path: str):
     compressed = zlib.compress(code.encode("utf-8"), 9)

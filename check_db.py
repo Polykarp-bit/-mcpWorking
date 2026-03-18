@@ -1,7 +1,9 @@
-import os, sys
+import os
+import sys
+
 os.environ["NEO4J_URI"] = "bolt://localhost:7687"
 os.environ["NEO4J_USER"] = "neo4j"
-os.environ["NEO4J_PASSWORD"] = "stones-principal-roars"
+os.environ["NEO4J_PASSWORD"] = os.environ.get("NEO4J_PASSWORD", "yourPassword")
 sys.path.append("src")
 from neo4j_mcp_server.server import _run_write
 
@@ -14,8 +16,13 @@ for r in res:
     print(f" - name: {name}, title: {title} (ID: {node_id})")
 
     # Get SWOT for this node
-    swot_res = _run_write("MATCH (d:Arc42)-[:hasTextEingabe]->(t:TextEingabe) WHERE id(d) = $id RETURN t.type as type, t.content as content", id=node_id)
+    swot_res = _run_write(
+        "MATCH (d:Arc42)-[:hasTextEingabe]->(t:TextEingabe) "
+        "WHERE id(d) = $id "
+        "RETURN t.type as type, t.content as content",
+        id=node_id,
+    )
     for s in swot_res:
-         t = s["type"]
-         c = s["content"]
-         print(f"   -> {t}: {c}")
+        t = s["type"]
+        c = s["content"]
+        print(f"   -> {t}: {c}")

@@ -1,6 +1,4 @@
 import subprocess
-import shutil
-import re
 import os
 import re
 
