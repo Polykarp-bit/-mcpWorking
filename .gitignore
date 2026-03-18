@@ -1,6 +1,27 @@
-# Alles ignorieren
-*
+__pycache__/
+*.py[cod]
+*.pyd
+.Python
 
-# Außer diese Dateien/Ordner
-!server.py
-!.gitignore
+.venv/
+venv/
+ENV/
+env/
+
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+coverage.xml
+.coverage
+htmlcov/
+
+.DS_Store
+
+# Local config / secrets
+cursor-mcp-config.json
+*.env
+.env
+.env.*
+
+# Optional: large local artifacts
+*.docx

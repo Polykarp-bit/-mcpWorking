@@ -347,7 +347,7 @@ def add_documentation(title: str, content: str, doc_type: str = "Konzept") -> st
 # --- Chapter 1: Einführung und Ziele ---
 
 @mcp.tool()
-def add_requirement(task: str, parent_name: str = "Neo4j MCP Server") -> str:
+def add_requirement(task: str, *, parent_name: str) -> str:
     """Add a Requirement (Aufgabenstellung) to Chapter 1 – Einführung und Ziele.
 
     Args:
@@ -373,7 +373,7 @@ def add_requirement(task: str, parent_name: str = "Neo4j MCP Server") -> str:
         return _format_error("add_requirement", e)
 
 @mcp.tool()
-def add_quality_goal(goal: str, motivation: str, criteria: str = "Funktionalität", parent_name: str = "Neo4j MCP Server") -> str:
+def add_quality_goal(goal: str, motivation: str, criteria: str = "Funktionalität", *, parent_name: str) -> str:
     """Add a Quality Goal (Qualitätsziel) for Chapter 1.
     Args:
         goal: The name/title of the goal.
@@ -405,7 +405,7 @@ def add_quality_goal(goal: str, motivation: str, criteria: str = "Funktionalitä
         return _format_error("add_quality_goal", e)
 
 @mcp.tool()
-def add_stakeholder(role_or_name: str, contact: str = "", expectation: str = "", parent_name: str = "Neo4j MCP Server") -> str:
+def add_stakeholder(role_or_name: str, contact: str = "", expectation: str = "", *, parent_name: str) -> str:
     """Add a Stakeholder for Chapter 1.
     Args:
         role_or_name: The name or role of the stakeholder (e.g. 'Software Architect').
@@ -435,7 +435,7 @@ def add_stakeholder(role_or_name: str, contact: str = "", expectation: str = "",
 # --- Chapter 2: Randbedingungen ---
 
 @mcp.tool()
-def add_technical_constraint(constraint: str, background: str, parent_name: str = "Neo4j MCP Server") -> str:
+def add_technical_constraint(constraint: str, background: str, *, parent_name: str) -> str:
     """Add a Technical Constraint (Technische Randbedingung) for Chapter 2."""
     try:
         constraint = _validate_required(constraint, "constraint")
@@ -456,7 +456,7 @@ def add_technical_constraint(constraint: str, background: str, parent_name: str 
         return _format_error("add_technical_constraint", e)
 
 @mcp.tool()
-def add_organizational_constraint(constraint: str, background: str, parent_name: str = "Neo4j MCP Server") -> str:
+def add_organizational_constraint(constraint: str, background: str, *, parent_name: str) -> str:
     """Add an Organizational Constraint (Organisatorische Randbedingung) for Chapter 2."""
     try:
         constraint = _validate_required(constraint, "constraint")
@@ -477,7 +477,7 @@ def add_organizational_constraint(constraint: str, background: str, parent_name:
         return _format_error("add_organizational_constraint", e)
 
 @mcp.tool()
-def add_ecological_constraint(constraint: str, background: str, parent_name: str = "Neo4j MCP Server") -> str:
+def add_ecological_constraint(constraint: str, background: str, *, parent_name: str) -> str:
     """Add an Ecological Constraint (Ökologische Randbedingung) for Chapter 2."""
     try:
         constraint = _validate_required(constraint, "constraint")
@@ -498,7 +498,7 @@ def add_ecological_constraint(constraint: str, background: str, parent_name: str
         return _format_error("add_ecological_constraint", e)
 
 @mcp.tool()
-def add_convention(convention: str, explanation: str, parent_name: str = "Neo4j MCP Server") -> str:
+def add_convention(convention: str, explanation: str, *, parent_name: str) -> str:
     """Add a Convention (Konvention) for Chapter 2."""
     try:
         convention = _validate_required(convention, "convention")
@@ -522,7 +522,7 @@ def add_convention(convention: str, explanation: str, parent_name: str = "Neo4j 
 # --- Chapter 3: Kontextabgrenzung ---
 
 @mcp.tool()
-def add_business_context(partner: str, input_data: str, output_data: str, description: str, risks: str, parent_name: str = "Neo4j MCP Server") -> str:
+def add_business_context(partner: str, input_data: str, output_data: str, description: str, risks: str, *, parent_name: str) -> str:
     """Add Business Context (Fachlicher Kontext) for Chapter 3."""
     try:
         partner = _validate_required(partner, "partner")
@@ -553,7 +553,7 @@ def add_business_context(partner: str, input_data: str, output_data: str, descri
         return _format_error("add_business_context", e)
 
 @mcp.tool()
-def add_technical_context(description: str, parent_name: str = "Neo4j MCP Server") -> str:
+def add_technical_context(description: str, *, parent_name: str) -> str:
     """Add Technical Context (Technischer Kontext) for Chapter 3."""
     try:
         description = _validate_required(description, "description")
@@ -578,7 +578,7 @@ def add_technical_context(description: str, parent_name: str = "Neo4j MCP Server
         return _format_error("add_technical_context", e)
 
 @mcp.tool()
-def add_interface(name: str, documentation: str, calls: int = 0, emissions: float = 0.0, parent_name: str = "Neo4j MCP Server") -> str:
+def add_interface(name: str, documentation: str, calls: int = 0, emissions: float = 0.0, *, parent_name: str) -> str:
     """Add an Interface (Schnittstelle) for Chapter 3/Technical Context.
     Args:
         name: Name of the interface (e.g. 'MCP Stdio', 'Neo4j Bolt').
@@ -616,7 +616,7 @@ def add_interface(name: str, documentation: str, calls: int = 0, emissions: floa
 # --- Chapter 4: Lösungsstrategie ---
 
 @mcp.tool()
-def add_solution_strategy(strategy: str, parent_name: str = "Neo4j MCP Server") -> str:
+def add_solution_strategy(strategy: str, *, parent_name: str) -> str:
     """Add a Solution Strategy (Lösungsstrategie) for Chapter 4."""
     try:
         strategy = _validate_required(strategy, "strategy")
@@ -639,7 +639,7 @@ def add_solution_strategy(strategy: str, parent_name: str = "Neo4j MCP Server") 
 # --- Chapter 5: Bausteinsicht ---
 
 @mcp.tool()
-def add_building_block_view(description: str, image_file_path: str = "", parent_name: str = "Neo4j MCP Server") -> str:
+def add_building_block_view(description: str, image_file_path: str = "", *, parent_name: str) -> str:
     """Add a Building Block View (Bausteinsicht) for Chapter 5. 
     Overwrites existing view.
     Args:
@@ -708,8 +708,7 @@ def add_building_block_view(description: str, image_file_path: str = "", parent_
 
 @mcp.tool()
 def update_building_block_view_description(
-    new_description: str,
-    parent_name: str = "Neo4j MCP Server",
+    new_description: str, *, parent_name: str,
 ) -> str:
     """Update only the textual description of the Building Block View (Chapter 5).
 
@@ -748,7 +747,7 @@ def update_building_block_view_description(
 # --- Chapter 6: Laufzeitsicht ---
 
 @mcp.tool()
-def add_runtime_view(description: str, image_file_path: str = "", parent_name: str = "Neo4j MCP Server") -> str:
+def add_runtime_view(description: str, image_file_path: str = "", *, parent_name: str) -> str:
     """Add a Runtime View (Laufzeitsicht) for Chapter 6."""
     try:
         description = _validate_required(description, "description")
@@ -808,7 +807,7 @@ def add_runtime_view(description: str, image_file_path: str = "", parent_name: s
 # --- Chapter 7: Verteilungssicht ---
 
 @mcp.tool()
-def add_deployment_view(description: str, image_file_path: str = "", parent_name: str = "Neo4j MCP Server") -> str:
+def add_deployment_view(description: str, image_file_path: str = "", *, parent_name: str) -> str:
     """Add a Deployment View (Verteilungssicht) for Chapter 7."""
     try:
         description = _validate_required(description, "description")
@@ -868,7 +867,7 @@ def add_deployment_view(description: str, image_file_path: str = "", parent_name
 # --- Chapter 9: Entwurfsentscheidungen ---
 
 @mcp.tool()
-def add_design_decision(decision: str, consequence: str, reasoning: str, importance: str, parent_name: str = "Neo4j MCP Server") -> str:
+def add_design_decision(decision: str, consequence: str, reasoning: str, importance: str, *, parent_name: str) -> str:
     """Add a Design Decision (Entwurfsentscheidung) for Chapter 9."""
     try:
         decision = _validate_required(decision, "decision")
@@ -906,8 +905,7 @@ def add_quality_scenario(
     response: str,
     priority: str,
     risk: str,
-    qz_name: str = "",
-    parent_name: str = "Neo4j MCP Server",
+    qz_name: str = "", *, parent_name: str,
 ) -> str:
     """Add a Quality Scenario (Qualitätsszenario) for Chapter 10.
 
@@ -982,8 +980,7 @@ def update_quality_scenario(
     new_response: str = "",
     new_priority: str = "",
     new_risk: str = "",
-    new_qz_name: str = "",
-    parent_name: str = "Neo4j MCP Server",
+    new_qz_name: str = "", *, parent_name: str,
 ) -> str:
     """Update an existing Quality Scenario (Qualitätsszenario) in Chapter 10.
 
@@ -1073,7 +1070,7 @@ def update_quality_scenario(
 # --- Chapter 11: Risiken ---
 
 @mcp.tool()
-def add_risk(description: str, impact: str, probability: str, status: str, parent_name: str = "Neo4j MCP Server") -> str:
+def add_risk(description: str, impact: str, probability: str, status: str, *, parent_name: str) -> str:
     """Add a Risk (Risiko) for Chapter 11.
     Args:
         description: The risk description (anforderung).
@@ -1115,7 +1112,7 @@ def add_risk(description: str, impact: str, probability: str, status: str, paren
 # --- Chapter 12: Glossar ---
 
 @mcp.tool()
-def add_glossary_term(term: str, description: str, parent_name: str = "Neo4j MCP Server") -> str:
+def add_glossary_term(term: str, description: str, *, parent_name: str) -> str:
     """Add a Glossary Term (Glossar) for Chapter 12."""
     try:
         term = _validate_required(term, "term")
@@ -1139,7 +1136,7 @@ def add_glossary_term(term: str, description: str, parent_name: str = "Neo4j MCP
 # --- Chapter 13: Nachhaltigkeit ---
 
 @mcp.tool()
-def add_sustainability_goal(goal: str, motivation: str, priority: str, saving: str, parent_name: str = "Neo4j MCP Server") -> str:
+def add_sustainability_goal(goal: str, motivation: str, priority: str, saving: str, *, parent_name: str) -> str:
     """Add a Sustainability Goal (Nachhaltigkeitsziel) for Chapter 13."""
     try:
         goal = _validate_required(goal, "goal")
@@ -1168,7 +1165,7 @@ def add_sustainability_goal(goal: str, motivation: str, priority: str, saving: s
 
 
 @mcp.tool()
-def read_arc42_chapter(chapter: str, parent_name: str = "Neo4j MCP Server") -> str:
+def read_arc42_chapter(chapter: str, *, parent_name: str) -> str:
     """Read the content of a specific arc42 chapter (1-13).
 
     Returns all nodes belonging to the specified chapter in Markdown format.
@@ -1382,7 +1379,7 @@ def review_changes() -> str:
 
 
 @mcp.prompt()
-def generate_test_cases(parent_name: str = "Neo4j MCP Server") -> str:
+def generate_test_cases(parent_name: str) -> str:
     """Generiere strukturierte Testfälle aus der Architekturdokumentation.
 
     Liest Kapitel 1 (Anforderungen), 6 (Laufzeitsicht), 10 (Qualitätsszenarien)
@@ -1441,7 +1438,7 @@ def generate_test_cases(parent_name: str = "Neo4j MCP Server") -> str:
 # =========================================================================
 
 @mcp.tool()
-def update_requirement(old_task: str, new_task: str, parent_name: str = "Neo4j MCP Server") -> str:
+def update_requirement(old_task: str, new_task: str, *, parent_name: str) -> str:
     """Update an existing Requirement (Aufgabenstellung) in Chapter 1.
 
     Finds the requirement by its current text and replaces it.
@@ -1473,7 +1470,7 @@ def update_requirement(old_task: str, new_task: str, parent_name: str = "Neo4j M
 
 
 @mcp.tool()
-def update_stakeholder(old_name: str, new_name: str = "", new_contact: str = "", new_expectation: str = "", parent_name: str = "Neo4j MCP Server") -> str:
+def update_stakeholder(old_name: str, new_name: str = "", new_contact: str = "", new_expectation: str = "", *, parent_name: str) -> str:
     """Update an existing Stakeholder in Chapter 1.
 
     Finds the stakeholder by role/name and updates the specified fields.
@@ -1518,7 +1515,7 @@ def update_stakeholder(old_name: str, new_name: str = "", new_contact: str = "",
 
 
 @mcp.tool()
-def update_quality_goal(old_goal: str, new_goal: str = "", new_motivation: str = "", parent_name: str = "Neo4j MCP Server") -> str:
+def update_quality_goal(old_goal: str, new_goal: str = "", new_motivation: str = "", *, parent_name: str) -> str:
     """Update an existing Quality Goal (Qualitätsziel) in Chapter 1.
 
     Args:
@@ -1557,7 +1554,7 @@ def update_quality_goal(old_goal: str, new_goal: str = "", new_motivation: str =
 
 
 @mcp.tool()
-def update_documentation(title: str, new_content: str, parent_name: str = "Neo4j MCP Server") -> str:
+def update_documentation(title: str, new_content: str, *, parent_name: str) -> str:
     """Update the text content of an existing Konzept (Chapter 8).
 
     Args:
@@ -1587,7 +1584,7 @@ def update_documentation(title: str, new_content: str, parent_name: str = "Neo4j
 
 
 @mcp.tool()
-def update_design_decision(old_decision: str, new_decision: str = "", new_consequence: str = "", new_reasoning: str = "", parent_name: str = "Neo4j MCP Server") -> str:
+def update_design_decision(old_decision: str, new_decision: str = "", new_consequence: str = "", new_reasoning: str = "", *, parent_name: str) -> str:
     """Update an existing Design Decision (Entwurfsentscheidung) in Chapter 9.
 
     Args:
@@ -1629,7 +1626,7 @@ def update_design_decision(old_decision: str, new_decision: str = "", new_conseq
 
 
 @mcp.tool()
-def update_risk(old_description: str, new_description: str = "", new_impact: str = "", new_probability: str = "", new_status: str = "", parent_name: str = "Neo4j MCP Server") -> str:
+def update_risk(old_description: str, new_description: str = "", new_impact: str = "", new_probability: str = "", new_status: str = "", *, parent_name: str) -> str:
     """Update an existing Risk (Risiko) in Chapter 11.
 
     Args:
@@ -1673,7 +1670,7 @@ def update_risk(old_description: str, new_description: str = "", new_impact: str
 
 
 @mcp.tool()
-def update_glossary_term(old_term: str, new_term: str = "", new_description: str = "", parent_name: str = "Neo4j MCP Server") -> str:
+def update_glossary_term(old_term: str, new_term: str = "", new_description: str = "", *, parent_name: str) -> str:
     """Update an existing Glossary Term (Glossar) in Chapter 12.
 
     Args:
@@ -1716,7 +1713,7 @@ def update_glossary_term(old_term: str, new_term: str = "", new_description: str
 # =========================================================================
 
 @mcp.tool()
-def get_diagram(chapter: str, parent_name: str = "Neo4j MCP Server") -> str:
+def get_diagram(chapter: str, *, parent_name: str) -> str:
     """Retrieve the description and metadata of a diagram (Bausteinsicht/Laufzeitsicht/Verteilungssicht).
 
     Returns the text description associated with the diagram.
@@ -1799,8 +1796,7 @@ def _mermaid_to_png_bytes(mermaid_code: str) -> bytes:
 def generate_mermaid_diagram(
     chapter: str,
     mermaid_code: str,
-    description: str,
-    parent_name: str = "Neo4j MCP Server",
+    description: str, *, parent_name: str,
 ) -> str:
     """Generate a Mermaid diagram via Kroki API and save the PNG to Neo4j.
 
@@ -1911,7 +1907,7 @@ def generate_mermaid_diagram(
 # =========================================================================
 
 @mcp.tool()
-def explain_node(title: str, parent_name: str = "Neo4j MCP Server") -> str:
+def explain_node(title: str, *, parent_name: str) -> str:
     """Erkläre einen spezifischen Dokumentations-Knoten inkl. Kontext.
 
     Finds a single node by its human-readable title (e.g. Stakeholder-Name,
@@ -1996,7 +1992,7 @@ def explain_node(title: str, parent_name: str = "Neo4j MCP Server") -> str:
 
 
 @mcp.tool()
-def check_consistency_report(parent_name: str = "Neo4j MCP Server") -> str:
+def check_consistency_report(parent_name: str) -> str:
     """Führt einfache, aber konkrete Konsistenzchecks über mehrere Kapitel aus.
 
     Aktuell implementierte Prüfungen:
@@ -2104,7 +2100,175 @@ def check_consistency_report(parent_name: str = "Neo4j MCP Server") -> str:
 # =========================================================================
 # Entry Point
 # =========================================================================
-if __name__ == "__main__":
+def main():
     logger.info("arc42doc MCP Server wird gestartet …")
-    mcp.run()
+    mcp.run(transport="stdio")
 
+if __name__ == "__main__":
+    main()
+
+
+# --- Neu hinzugefuegte Tools (Dynamische Projekte) ---
+
+@mcp.tool()
+def list_projects() -> str:
+    """List all available Arc42 projects in the database.
+    Use this to see which projects exist before calling other tools.
+    """
+    cypher = "MATCH (d:Arc42) RETURN id(d) as id, d.name as name"
+    try:
+        res = _run_write(cypher)
+        if not res:
+            return "## Projects\n\nKeine Projekte gefunden.\n"
+        output = "## Available Projects\n\n"
+        for r in res:
+            output += f"- **{r.get('name', 'Unnamed')}** (ID: {r.get('id')})\n"
+        return output
+    except Exception as e:
+        return _format_error("list_projects", e)
+
+@mcp.tool()
+def rename_project(old_name: str, new_name: str) -> str:
+    """Rename a root project (Arc42 node) in the database."""
+    try:
+        old_name = _validate_required(old_name, "old_name")
+        new_name = _validate_required(new_name, "new_name")
+    except ValueError as e:
+        return _format_error("rename_project", e)
+    
+    cypher = (
+        "MATCH (n:Arc42 {name: $old_name}) "
+        "SET n.name = $new_name "
+        "RETURN n"
+    )
+    try:
+        records = _run_write(cypher, old_name=old_name, new_name=new_name)
+        if not records:
+            return f"## Not Found\n\nKein Projekt mit Namen '{old_name}' gefunden.\n"
+        return f"## Success\n\nProjekt '{old_name}' wurde erfolgreich in '{new_name}' umbenannt.\n"
+    except Exception as e:
+        return _format_error("rename_project", e)
+
+@mcp.tool()
+def add_project_meeting(parent_name: str, name: str, frequency: int, repetition: str, meeting_type: str) -> str:
+    """Add a Project Meeting (Meeting) for Chapter 4 - Projektorganisation."""
+    try:
+        name = _validate_required(name, "name")
+        repetition = _validate_required(repetition, "repetition")
+        meeting_type = _validate_required(meeting_type, "meeting_type")
+        if not isinstance(frequency, int):
+            try:
+                frequency = int(frequency)
+            except ValueError:
+                return "## Error\n\nParameter 'frequency' muss ein Integer sein.\n"
+    except ValueError as e:
+        return _format_error("add_project_meeting", e)
+
+    cypher = (
+        "MERGE (d:Arc42 {name: $parent_name}) "
+        "CREATE (m:Meeting {name: $name, frequency: $frequency, repetition: $repetition, type: $type}) "
+        "MERGE (d)-[:hasMeeting]->(m) "
+        "RETURN m"
+    )
+    try:
+        _run_write(cypher, name=name, frequency=frequency, repetition=repetition, type=meeting_type, parent_name=parent_name)
+        return f"## Success\n\nAdded Project Meeting: **{name}**\nFrequency: {frequency} {repetition}\nType: {meeting_type}\n"
+    except Exception as e:
+        return _format_error("add_project_meeting", e)
+
+@mcp.tool()
+def add_swot(parent_name: str, strength: str = "", weakness: str = "", opportunity: str = "", threat: str = "") -> str:
+    """Add SWOT Analysis entries (Strengths, Weaknesses, Opportunities, Threats) for Chapter 11."""
+    added = []
+    
+    def _add_single(entry_type, content):
+        if not content.strip():
+            return
+        cypher = (
+            "MERGE (d:Arc42 {name: $parent_name}) "
+            "CREATE (n:TextEingabe {type: $type, content: $content}) "
+            "MERGE (d)-[:hasTextEingabe]->(n) "
+            "RETURN n"
+        )
+        _run_write(cypher, type=entry_type, content=content.strip(), parent_name=parent_name)
+        added.append(f"- **{entry_type}**: {content.strip()}")
+
+    try:
+        if strength: _add_single("STRENGTH", strength)
+        if weakness: _add_single("WEAKNESS", weakness)
+        if opportunity: _add_single("OPPORTUNITY", opportunity)
+        if threat: _add_single("THREAT", threat)
+        
+        if not added:
+            return "## Warning\n\nKeine SWOT-Eintraege uebergeben.\n"
+            
+        return "## Success\n\nAdded SWOT Entries:\n" + "\n".join(added) + "\n"
+    except Exception as e:
+        return _format_error("add_swot", e)
+
+@mcp.tool()
+def delete_convention(parent_name: str, convention: str) -> str:
+    """Delete a Convention (Konvention)."""
+    try:
+        convention = _validate_required(convention, "convention")
+    except ValueError as e:
+        return _format_error("delete_convention", e)
+
+    cypher = (
+        "MATCH (d:Arc42 {name: $parent_name})-[r:hatKonvention]->(n:Konvention {konvention: $convention}) "
+        "DELETE r, n "
+        "RETURN count(n) as c"
+    )
+    try:
+        res = _run_write(cypher, convention=convention, parent_name=parent_name)
+        deleted = res[0]["c"] if getattr(res, "records", None) else res[0]["c"]
+        if deleted > 0:
+            return f"## Success\n\nDeleted Convention: **{convention}**\n"
+        return f"## Warning\n\nNo matching convention '{convention}' found.\n"
+    except Exception as e:
+        return _format_error("delete_convention", e)
+
+@mcp.tool()
+def delete_project_meeting(parent_name: str, name: str) -> str:
+    """Delete a specific Project Meeting for Chapter 4."""
+    try:
+        name = _validate_required(name, "name")
+    except ValueError as e:
+        return _format_error("delete_project_meeting", e)
+
+    cypher = (
+        "MATCH (d:Arc42 {name: $parent_name})-[r:hasMeeting]->(m:Meeting {name: $name}) "
+        "DELETE r, m "
+        "RETURN count(m) as c"
+    )
+    try:
+        res = _run_write(cypher, name=name, parent_name=parent_name)
+        deleted = res[0]["c"] if getattr(res, "records", None) else res[0]["c"]
+        if deleted > 0:
+            return f"## Success\n\nDeleted Project Meeting: **{name}**\n"
+        return f"## Warning\n\nNo matching meeting '{name}' found.\n"
+    except Exception as e:
+        return _format_error("delete_project_meeting", e)
+
+@mcp.tool()
+def delete_swot_entry(parent_name: str, entry_type: str, content: str) -> str:
+    """Delete a specific SWOT entry for Chapter 11."""
+    try:
+        entry_type = _validate_required(entry_type, "entry_type")
+        content = _validate_required(content, "content")
+    except ValueError as e:
+        return _format_error("delete_swot_entry", e)
+
+    cypher = (
+        "MATCH (d:Arc42 {name: $parent_name})-[r:hasTextEingabe]->(n:TextEingabe {type: $type, content: $content}) "
+        "DELETE r, n "
+        "RETURN count(n) as c"
+    )
+    try:
+        res = _run_write(cypher, type=entry_type, content=content, parent_name=parent_name)
+        deleted = res[0]["c"] if getattr(res, "records", None) else res[0]["c"]
+        if deleted > 0:
+            return f"## Success\n\nDeleted SWOT Entry ({entry_type}): **{content[:50]}**\n"
+        return f"## Warning\n\nNo matching SWOT entry found.\n"
+    except Exception as e:
+        return _format_error("delete_swot_entry", e)
