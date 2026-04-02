@@ -4,101 +4,107 @@ Dieser MCP-Server ermöglicht es, Dokumentation aus einer Neo4j-Datenbank zu dur
 
 ## Installation
 
-1. **Abhängigkeiten installieren:**
-   ```bash
-   chmod +x setup.sh
-   ./setup.sh
-   ```
+**Wichtig (macOS / Homebrew-Python):**  
+`pip install` direkt ins System-Python wird oft durch **PEP 668** blockiert.  
+Deshalb ist der **Standard** wieder eine **Projekt-`.venv`** — zuverlässig für **Cursor** und **Claude Desktop**.
 
-   Oder manuell mit pip/uv:
-   ```bash
-   python3 -m venv .venv
-   source .venv/bin/activate
-   pip install -e .
-   ```
+```bash
+cd /pfad/zu/mcpWorking
+chmod +x setup.sh
+./setup.sh
+```
+
+Das legt `.venv` an und führt `pip install -e .` darin aus.
+
+**Optional – nur System-Python (kann unter Homebrew fehlschlagen):**
+
+```bash
+./setup.sh --system
+```
+
+**Ohne setup.sh manuell:**
+
+```bash
+cd /pfad/zu/mcpWorking
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -e .
+```
+
+## Umgebungsvariablen (Neo4j + Arc42-Projekt)
+
+| Variable | Bedeutung |
+|----------|-----------|
+| `NEO4J_URI` | z. B. `bolt://localhost:7687` |
+| `NEO4J_USER` | z. B. `neo4j` |
+| `NEO4J_PASSWORD` | Neo4j-Passwort |
+| `ARC42_PARENT_NAME` | **Name** des `Arc42`-Knotens in Neo4j (für `read_arc42_chapter`, Ressourcen `arc42://chapter/...`) |
+
+```bash
+export NEO4J_URI="bolt://localhost:7687"
+export NEO4J_USER="neo4j"
+export NEO4J_PASSWORD="dein_passwort"
+export ARC42_PARENT_NAME="MCP Server arc42doc"
+```
+
+## Cursor & Claude Desktop (MCP)
+
+1. `./setup.sh` ausführen (`.venv` anlegen).
+2. Vorlage kopieren:
+   - **Claude:** `claude_desktop_config.example.json` →  
+     `~/Library/Application Support/Claude/claude_desktop_config.json` (einbinden/mergen)
+   - **Cursor:** `cursor-mcp-config.example.json` in die MCP-Einstellungen übernehmen
+3. **`command`** auf den **absoluten** Pfad setzen:  
+   `/…/mcpWorking/.venv/bin/python`
+4. **`NEO4J_*`** und **`ARC42_PARENT_NAME`** eintragen.
+5. **Cursor / Claude vollständig neu starten.**
+
+Alternative Startmethode (gleiches Repo, nutzt `.venv` falls vorhanden):
+
+```json
+"command": "/ABSOLUTER/PFAD/ZU/mcpWorking/scripts/run_arc42_mcp.sh",
+"args": []
+```
+
+(`run_arc42_mcp.sh` ist ausführbar; setzt bei Bedarf `PYTHONPATH=src`.)
+
+Details: **`INSTALLATION.md`**
 
 ## Docker Container
 
-Du kannst den Server auch via Docker betreiben:
 ```bash
 docker build -t neo4j-mcp-server .
 docker run --rm -it \
   -e NEO4J_URI="bolt://host.docker.internal:7687" \
   -e NEO4J_USER="neo4j" \
-  -e NEO4J_PASSWORD="dein_echtes_neo4j_passwort" \
+  -e NEO4J_PASSWORD="dein_passwort" \
+  -e ARC42_PARENT_NAME="dein_projektname" \
   neo4j-mcp-server
 ```
 
-## Konfiguration
-
-Setze die folgenden Umgebungsvariablen:
-
-```bash
-export NEO4J_URI="bolt://localhost:7687"
-export NEO4J_USER="neo4j"
-export NEO4J_PASSWORD="dein_echtes_neo4j_passwort"
-```
-
-## Cursor MCP Konfiguration
-
-**Siehe `INSTALLATION.md` für detaillierte Anweisungen!**
-
-Kurzfassung:
-1. Öffne Cursor Settings → MCP Servers
-2. Füge die Konfiguration aus `cursor-mcp-config.json` hinzu
-3. **WICHTIG**: Ersetze das Passwort durch dein tatsächliches Neo4j-Passwort (`NEO4J_PASSWORD`).
-4. Starte Cursor neu
-
 ## Verfügbare Tools
 
-- **search_docs(query)**: Durchsucht alle Dokumentations-Knoten nach dem angegebenen Query
-- **list_titles()**: Listet alle Titel aus der Dokumentation auf
-- **add_documentation(title, content, doc_type)**: Fügt einen neuen Dokumentations-Knoten hinzu
-- **Viele weitere tools**: Der Server ermöglicht auch das Hinzufügen von Bausteinsichten, Laufzeitsichten und Anforderungen etc.
+- **search_docs**, **list_titles**, **read_arc42_chapter**, viele CRUD-Tools pro arc42-Kapitel, **list_projects**, **rename_project**, …
 
 ## Manueller Start
 
-Um den Server lokal für den Inspector zu starten:
 ```bash
-cd /Users/tobiasniederpruem/dev/projects/mcpWorking
+cd /pfad/zu/mcpWorking
 source .venv/bin/activate
 export NEO4J_URI="bolt://localhost:7687"
 export NEO4J_USER="neo4j"
-export NEO4J_PASSWORD="dein_echtes_neo4j_passwort"
+export NEO4J_PASSWORD="dein_passwort"
+export ARC42_PARENT_NAME="dein_projektname"
 
-# Server starten
 python -m neo4j_mcp_server
 ```
 
-## MCP Inspector (Interaktives Testen)
-
-Der MCP Inspector ist ein browser-basiertes Tool, um den Server interaktiv zu testen.
+## MCP Inspector
 
 ```bash
 npx @modelcontextprotocol/inspector \
-  /Users/tobiasniederpruem/dev/projects/mcpWorking/.venv/bin/python \
+  "$(pwd)/.venv/bin/python" \
   -m neo4j_mcp_server
 ```
 
-## Claude Desktop App Integration
-
-Füge folgende Konfiguration zu deiner `claude_desktop_config.json` hinzu (Mac: `~/Library/Application Support/Claude/claude_desktop_config.json`):
-
-```json
-{
-  "mcpServers": {
-    "neo4j-mcp-server": {
-      "command": "/Users/tobiasniederpruem/dev/projects/mcpWorking/.venv/bin/python",
-      "args": [
-        "-m", "neo4j_mcp_server"
-      ],
-      "env": {
-        "NEO4J_URI": "bolt://localhost:7687",
-        "NEO4J_USER": "neo4j",
-        "NEO4J_PASSWORD": "dein_echtes_neo4j_passwort"
-      }
-    }
-  }
-}
-```
-Überprüfe nach dem Neustart von Claude, ob das Stecker-Symbol aktiv ist.
+(Vorher `NEO4J_*` und ggf. `ARC42_PARENT_NAME` in der Shell setzen.)

@@ -1,37 +1,37 @@
 #!/bin/bash
+# Standard: Projekt-.venv (empfohlen — funktioniert mit Homebrew/Python PEP 668).
+# Optional: ./setup.sh --system  versucht System-pip (scheitert oft unter macOS/Homebrew).
 
-# Setup script for Neo4j MCP Server
+set -euo pipefail
 
-echo "Setting up Neo4j MCP Server..."
+echo "Neo4j MCP Server – Installation"
+echo ""
 
-# Check if Python 3 is available
 if ! command -v python3 &> /dev/null; then
-    echo "Error: Python 3 is not installed"
+    echo "Fehler: python3 ist nicht installiert oder nicht im PATH."
     exit 1
 fi
 
-# Create virtual environment if it doesn't exist
-if [ ! -d ".venv" ]; then
-    echo "Creating virtual environment..."
-    python3 -m venv .venv
+if [ "${1:-}" = "--system" ]; then
+    echo "Modus: System-Python (ohne venv): $(command -v python3)"
+    echo "Hinweis: Unter macOS/Homebrew schlägt das oft fehl (PEP 668). Bei Fehler: ./setup.sh ohne --system"
+    python3 -m pip install --upgrade pip
+    python3 -m pip install -e .
+    echo ""
+    echo "Fertig. MCP command: $(command -v python3)"
+else
+    echo "Modus: virtuelle Umgebung .venv (empfohlen für Cursor / Claude Desktop)"
+    if [ ! -d ".venv" ]; then
+        echo "Erstelle .venv …"
+        python3 -m venv .venv
+    fi
+    # shellcheck source=/dev/null
+    source .venv/bin/activate
+    python -m pip install --upgrade pip
+    python -m pip install -e .
+    echo ""
+    echo "Fertig."
+    echo "  Server:  source .venv/bin/activate && export NEO4J_* && python -m neo4j_mcp_server"
+    echo "  MCP command in Cursor/Claude: $(pwd)/.venv/bin/python"
+    echo "  Oder Startskript: $(pwd)/scripts/run_arc42_mcp.sh"
 fi
-
-# Activate virtual environment
-echo "Activating virtual environment..."
-source .venv/bin/activate
-
-# Install dependencies via setup
-echo "Installing dependencies..."
-pip install --upgrade pip
-pip install -e .
-
-echo ""
-echo "Setup complete!"
-echo ""
-echo "To start the server manually, run:"
-echo "  source .venv/bin/activate"
-echo "  export NEO4J_URI='bolt://localhost:7687'"
-echo "  export NEO4J_USER='neo4j'"
-echo "  export NEO4J_PASSWORD='yourPassword'"
-echo "  python -m neo4j_mcp_server"
-echo ""

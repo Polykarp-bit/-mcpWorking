@@ -3,6 +3,7 @@ from __future__ import annotations
 import logging
 import os
 import re
+import sys
 import time
 from typing import Any, Dict, List, Tuple
 
@@ -13,10 +14,13 @@ from neo4j.exceptions import ServiceUnavailable, SessionExpired
 # ---------------------------------------------------------------------------
 # Logging (QA-MA-02, QA-MA-04 – Semantic Interaction Logging)
 # ---------------------------------------------------------------------------
+# MCP nutzt stdio für das Protokoll — Logs immer nach stderr (nicht stdout).
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s [%(levelname)s] %(name)s – %(message)s",
     datefmt="%Y-%m-%d %H:%M:%S",
+    stream=sys.stderr,
+    force=True,
 )
 logger = logging.getLogger("mcp.arc42")
 

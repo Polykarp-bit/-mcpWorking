@@ -1,89 +1,70 @@
-# Installation für Cursor
+# Installation für Cursor & Claude Desktop
 
-## Schritt 1: Abhängigkeiten installieren
+## Schritt 1: `.venv` anlegen und Paket installieren
 
-Dieses Projekt nutzt eine moderne Python Package-Struktur.
+Unter **macOS mit Homebrew-Python** schlägt `pip install -e .` ins System oft fehl (**PEP 668**).  
+Deshalb: **`./setup.sh`** ohne Optionen (legt `.venv` an).
 
 ```bash
-cd /Users/tobiasniederpruem/dev/projects/mcpWorking
+cd /pfad/zu/mcpWorking
 ./setup.sh
 ```
 
-Alternativ manuell:
-```bash
-cd /Users/tobiasniederpruem/dev/projects/mcpWorking
-python3 -m venv .venv
-source .venv/bin/activate
-pip install -e .
+Nur wenn du weißt, was du tust: `./setup.sh --system` (System-Python).
+
+## Schritt 2: Umgebungsvariablen in der MCP-Config
+
+In **Cursor** oder **Claude Desktop** müssen mindestens gesetzt sein:
+
+| Variable | Beispiel |
+|----------|----------|
+| `NEO4J_URI` | `bolt://localhost:7687` |
+| `NEO4J_USER` | `neo4j` |
+| `NEO4J_PASSWORD` | dein Neo4j-Passwort |
+| `ARC42_PARENT_NAME` | exakter Name des Arc42-Projektknotens in Neo4j |
+
+`ARC42_PARENT_NAME` wird u. a. für MCP-Ressourcen `arc42://chapter/…` und konsistente Kapitel-Lesezugriffe benötigt.
+
+## Schritt 3: `command` in der MCP-Konfiguration
+
+**Empfohlen:** absoluter Pfad zum Python in der Projekt-venv:
+
+```
+/pfad/zu/mcpWorking/.venv/bin/python
 ```
 
-## Schritt 2: Cursor MCP-Konfiguration hinzufügen
-
-### Option A: Über Cursor UI (Empfohlen)
-
-1. Öffne Cursor
-2. Gehe zu **Settings** (⌘,)
-3. Suche nach **"MCP"** oder **"Model Context Protocol"**
-4. Klicke auf **"Add MCP Server"** oder **"Configure MCP Servers"**
-5. Füge folgende Konfiguration hinzu:
+**Args:**
 
 ```json
-{
-  "command": "/Users/tobiasniederpruem/dev/projects/mcpWorking/.venv/bin/python",
-  "args": [
-    "-m",
-    "neo4j_mcp_server"
-  ],
-  "env": {
-    "NEO4J_URI": "bolt://localhost:7687",
-    "NEO4J_USER": "neo4j",
-    "NEO4J_PASSWORD": "DEIN_NEO4J_PASSWORT"
-  }
-}
+["-m", "neo4j_mcp_server"]
 ```
 
-### Option B: Über Konfigurationsdatei
+Vorlagen:
 
-1. Öffne die Cursor MCP-Konfigurationsdatei:
-   - Normalerweise unter: `~/Library/Application Support/Cursor/User/globalStorage/mcp.json`
-   - Oder in den Cursor-Einstellungen unter MCP Servers
+- `cursor-mcp-config.example.json`
+- `claude_desktop_config.example.json` (Mac: `~/Library/Application Support/Claude/claude_desktop_config.json`)
 
-2. Füge den Inhalt aus `cursor-mcp-config.json` zu deiner bestehenden Konfiguration hinzu.
+**Alternative:** `scripts/run_arc42_mcp.sh` als `command` (keine `args` nötig), gleiches Repo.
 
-3. **WICHTIG**: Ersetze das Passwort durch dein tatsächliches Neo4j-Passwort.
+## Schritt 4: Client neu starten
 
-## Schritt 3: Cursor neu starten
-
-Nach dem Hinzufügen der Konfiguration:
-1. **Cursor komplett schließen** (nicht nur das Fenster)
-2. Cursor neu starten
-3. Der MCP-Server sollte automatisch verbunden werden
-
-## Schritt 4: Verwendung
-
-Nach dem Neustart kannst du die Docs abfragen:
-
-- **`search_docs(query)`**: Durchsucht alle Dokumentations-Knoten
-- **`list_titles()`**: Listet alle Titel auf
-- ...und weitere Methoden zur Dokumentationsgenerierung.
+Cursor bzw. Claude **vollständig beenden** und neu öffnen.
 
 ## Troubleshooting
 
-### Server startet nicht
+### `ModuleNotFoundError: neo4j_mcp_server`
 
-1. Prüfe, ob Neo4j läuft auf `bolt://localhost:7687`.
+- `./setup.sh` ausgeführt?
+- In der MCP-Config derselbe Interpreter wie nach Setup: **`.venv/bin/python`**?
 
-2. Teste den Server manuell im Terminal:
-   ```bash
-   cd /Users/tobiasniederpruem/dev/projects/mcpWorking
-   source .venv/bin/activate
-   export NEO4J_URI="bolt://localhost:7687"
-   export NEO4J_USER="neo4j"
-   export NEO4J_PASSWORD="yourPassword"
-   python -m neo4j_mcp_server
-   ```
-   Wenn der Server ohne Absturz hochfährt, ist die Konfiguration korrekt.
+### `externally-managed-environment` (pip)
 
-### Passwort ändern
+- Nicht `./setup.sh --system` auf Homebrew-Python verwenden; normales **`./setup.sh`** nutzt `.venv`.
 
-Wenn du das Neo4j-Passwort ändern musst, aktualisiere es in der Cursor MCP-Konfiguration unter `env`.
+### Server startet, Tools scheitern an Neo4j
+
+- Neo4j läuft? URI/Port/User/Passwort korrekt?
+
+### Ressource `arc42://chapter/...` meldet Fehler zu `ARC42_PARENT_NAME`
+
+- Variable in der MCP-`env` setzen (siehe oben).
