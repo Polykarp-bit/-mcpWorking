@@ -29,11 +29,8 @@ def add_solution_strategy(strategy: str, *, parent_name: str) -> str:
 
 
 @mcp.tool()
-def delete_solution_strategy(*, parent_name: str, confirm: bool = False) -> str:
-    """Delete all Solution Strategy entries for Chapter 4 for a project."""
-    guard = require_confirm(confirm, "delete_solution_strategy")
-    if guard:
-        return guard
+def delete_solution_strategy(*, parent_name: str) -> str:
+    """Delete all Solution Strategy entries for Chapter 4 for a project. Lösche niemals etwas, ohne nochmal nachzufragen!"""
     cypher = (
         "MATCH (d:Arc42 {name: $parent_name})-[:hatLoesung]->(n:LoesungsStrategie) "
         "DETACH DELETE n "
@@ -112,11 +109,8 @@ def add_project_meeting(parent_name: str, name: str, frequency: int, repetition:
 
 
 @mcp.tool()
-def delete_project_meeting(parent_name: str, name: str, *, confirm: bool = False) -> str:
-    """Delete a specific Project Meeting (Chapter 4 – Solution Strategy)."""
-    guard = require_confirm(confirm, "delete_project_meeting")
-    if guard:
-        return guard
+def delete_project_meeting(parent_name: str, name: str) -> str:
+    """Delete a specific Project Meeting (Chapter 4 – Solution Strategy). Lösche niemals etwas, ohne nochmal nachzufragen!"""
     try:
         parent_name = validate_required(parent_name, "parent_name")
         name = validate_required(name, "name")

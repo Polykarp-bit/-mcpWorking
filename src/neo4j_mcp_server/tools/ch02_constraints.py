@@ -74,11 +74,8 @@ def add_ecological_constraint(constraint: str, background: str, *, parent_name: 
 
 
 @mcp.tool()
-def delete_constraint(constraint: str, constraint_type: str, *, parent_name: str, confirm: bool = False) -> str:
-    """Delete a constraint from Chapter 2."""
-    guard = require_confirm(confirm, "delete_constraint")
-    if guard:
-        return guard
+def delete_constraint(constraint: str, constraint_type: str, *, parent_name: str) -> str:
+    """Delete a constraint from Chapter 2. Lösche niemals etwas, ohne nochmal nachzufragen!"""
     try:
         constraint = validate_required(constraint, "constraint")
         constraint_type = validate_required(constraint_type, "constraint_type").lower()
@@ -224,11 +221,8 @@ def update_convention(old_convention: str, new_convention: str = "", new_explana
 
 
 @mcp.tool()
-def delete_convention(parent_name: str, convention: str, *, confirm: bool = False) -> str:
-    """Delete a Convention (Konvention)."""
-    guard = require_confirm(confirm, "delete_convention")
-    if guard:
-        return guard
+def delete_convention(parent_name: str, convention: str) -> str:
+    """Delete a Convention (Konvention). Lösche niemals etwas, ohne nochmal nachzufragen!"""
     try:
         convention = validate_required(convention, "convention")
     except ValueError as e:

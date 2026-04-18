@@ -26,3 +26,4 @@ cursor-mcp-config.json
 
 # Optional: large local artifacts
 *.docx
+diagramms/

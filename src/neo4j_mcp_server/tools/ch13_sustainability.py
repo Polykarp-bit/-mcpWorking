@@ -46,11 +46,8 @@ def add_sustainability_goal(goal: str, motivation: str, priority: str, saving: s
 
 
 @mcp.tool()
-def delete_sustainability_goal(goal: str, *, parent_name: str, confirm: bool = False) -> str:
-    """Delete a Sustainability Goal (Kap. 13) by goal title."""
-    guard = require_confirm(confirm, "delete_sustainability_goal")
-    if guard:
-        return guard
+def delete_sustainability_goal(goal: str, *, parent_name: str) -> str:
+    """Delete a Sustainability Goal (Kap. 13) by goal title. Lösche niemals etwas, ohne nochmal nachzufragen!"""
     try:
         goal = validate_required(goal, "goal")
     except ValueError as e:

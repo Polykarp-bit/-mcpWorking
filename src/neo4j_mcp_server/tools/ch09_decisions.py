@@ -92,11 +92,8 @@ def update_design_decision(
 
 
 @mcp.tool()
-def delete_design_decision(decision: str, *, parent_name: str, confirm: bool = False) -> str:
-    """Delete a Design Decision (Entwurfsentscheidung) by its decision text."""
-    guard = require_confirm(confirm, "delete_design_decision")
-    if guard:
-        return guard
+def delete_design_decision(decision: str, *, parent_name: str) -> str:
+    """Delete a Design Decision (Entwurfsentscheidung) by its decision text. Lösche niemals etwas, ohne nochmal nachzufragen!"""
     try:
         decision = validate_required(decision, "decision")
     except ValueError as e:

@@ -243,11 +243,8 @@ def update_deployment_view_description(new_description: str, *, parent_name: str
 
 
 @mcp.tool()
-def delete_diagram(chapter: str, *, parent_name: str, confirm: bool = False) -> str:
-    """Delete a diagram for Chapter 5/6/7 (Bausteinsicht/Laufzeitsicht/Verteilungssicht)."""
-    guard = require_confirm(confirm, "delete_diagram")
-    if guard:
-        return guard
+def delete_diagram(chapter: str, *, parent_name: str) -> str:
+    """Delete a diagram for Chapter 5/6/7 (Bausteinsicht/Laufzeitsicht/Verteilungssicht). Lösche niemals etwas, ohne nochmal nachzufragen!"""
 
     chapter = _safe_str(chapter).strip()
     cfg = {

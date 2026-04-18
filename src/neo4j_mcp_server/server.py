@@ -3,8 +3,8 @@ from __future__ import annotations
 import os
 from typing import Any, Dict, List
 
-# Import tool modules so decorators register tools on import.
-# (Keep this near the top so MCP hosts see a consistent tool set.)
+# Importiere Tool-Module, damit die Decorators die Tools beim Importieren registrieren.
+# (Behalte dies weit oben, damit MCP-Hosts ein konsistentes Tool-Set sehen.)
 from .tools import search as _tools_search  # noqa: F401
 from .tools import ch01_introduction as _tools_ch01  # noqa: F401
 from .tools import ch02_constraints as _tools_ch02  # noqa: F401
@@ -35,10 +35,10 @@ from .core import (
 
 
 def _validate_required(value: str, field_name: str) -> str:
-    """Validate that a required string field is not empty.
+    """Prüft, ob ein erforderliches String-Feld nicht leer ist.
 
-    Note: kept in this module for backwards-compatibility with tests that
-    monkeypatch `_MAX_INPUT_LEN` on `neo4j_mcp_server.server`.
+    Hinweis: Bleibt in diesem Modul zwecks Abwärtskompatibilität mit Tests, die
+    `_MAX_INPUT_LEN` an `neo4j_mcp_server.server` per Monkeypatch überschreiben.
     """
     v = str(value).strip() if value else ""
     if not v:
@@ -51,9 +51,9 @@ def _validate_required(value: str, field_name: str) -> str:
 
 
 def _require_confirm(confirm: bool, action: str) -> str | None:
-    """Guardrail for destructive operations (human-in-the-loop).
+    """Guardrail für destruktive Operationen (Human-in-the-Loop).
 
-    Returns a Markdown message if confirmation is missing, otherwise None.
+    Gibt eine Markdown-Nachricht zurück, falls die Bestätigung fehlt, ansonsten None.
     """
     if confirm is True:
         return None
@@ -65,10 +65,10 @@ def _require_confirm(confirm: bool, action: str) -> str | None:
 
 @mcp.tool()
 def read_arc42_chapter(chapter: str, *, parent_name: str) -> str:
-    """Read the content of a specific arc42 chapter (1-13).
+    """Liest den Inhalt eines bestimmten arc42-Kapitels (1-13) aus.
 
-    Returns all nodes belonging to the specified chapter in Markdown format.
-    Each chapter corresponds to a standard arc42 section:
+    Gibt alle Knoten zurück, die zu dem angegebenen Kapitel gehören, formatiert in Markdown.
+    Jedes Kapitel entspricht einer Standard-arc42-Sektion:
       1=Einführung/Ziele, 2=Randbedingungen, 3=Kontextabgrenzung,
       4=Lösungsstrategie, 5=Bausteinsicht, 6=Laufzeitsicht,
       7=Verteilungssicht, 8=Querschnittliche Konzepte,
@@ -76,8 +76,8 @@ def read_arc42_chapter(chapter: str, *, parent_name: str) -> str:
       11=Risiken und SWOT, 12=Glossar, 13=Nachhaltigkeit.
 
     Args:
-        chapter: Chapter number as string ('1' through '13').
-        parent_name: Name of the arc42 project.
+        chapter: Kapitelnummer als String ('1' bis '13').
+        parent_name: Name des arc42-Projekts.
     """
     logger.info("LLM fordert arc42-Kapitel %s an", chapter)
 
@@ -113,7 +113,7 @@ def read_arc42_chapter(chapter: str, *, parent_name: str) -> str:
     }
 
     if chapter not in chapter_map:
-        return f"Unknown chapter: {chapter}. Please specify 1-13."
+        return f"Unbekanntes Kapitel: {chapter}. Bitte 1-13 angeben."
 
     chapter_names = {
         "1": "Einführung und Ziele", "2": "Randbedingungen",
@@ -167,16 +167,16 @@ def read_arc42_chapter(chapter: str, *, parent_name: str) -> str:
 
 
 # =========================================================================
-# MCP RESOURCES (Epic 1 – Read-Access)
+# MCP RESSOURCEN (Epic 1 – Read-Access)
 # =========================================================================
 
 @mcp.resource("arc42://chapter/{chapter_number}")
 def get_chapter_resource(chapter_number: str) -> str:
-    """Read a specific arc42 chapter (1-13) as an MCP Resource.
+    """Liest ein bestimmtes arc42-Kapitel (1-13) als eine MCP Resource.
 
-    URI pattern: arc42://chapter/1  through  arc42://chapter/13
+    URI-Muster: arc42://chapter/1  bis  arc42://chapter/13
 
-    Requires env ``ARC42_PARENT_NAME`` (Arc42-Projektname in Neo4j), same as in MCP tool calls.
+    Benötigt die Umgebungsvariable (Env) ``ARC42_PARENT_NAME`` (Arc42-Projektname in Neo4j), analog zu den MCP Tool-Aufrufen.
     """
     logger.info("Resource arc42://chapter/%s abgerufen", chapter_number)
     parent_name = os.environ.get("ARC42_PARENT_NAME", "").strip()
@@ -192,7 +192,7 @@ def get_chapter_resource(chapter_number: str) -> str:
 
 @mcp.resource("arc42://overview")
 def get_overview_resource() -> str:
-    """High-level overview of the arc42 project – lists all chapters with a summary."""
+    """High-Level-Übersicht des arc42-Projekts – listet alle Kapitel mit einer Zusammenfassung auf."""
     logger.info("Resource arc42://overview abgerufen")
     parts = ["# arc42 Projektübersicht\n"]
     chapter_names = {
@@ -210,7 +210,7 @@ def get_overview_resource() -> str:
 
 
 # =========================================================================
-# MCP PROMPTS (Pre-defined Templates for LLM Interaction)
+# MCP PROMPTS (Vordefinierte Vorlagen für die LLM-Interaktion)
 # =========================================================================
 
 @mcp.prompt()
@@ -354,13 +354,13 @@ def generate_test_cases(parent_name: str) -> str:
 
 @mcp.tool()
 def create_project(project_name: str) -> str:
-    """Explicitly create a new Arc42 project node.
+    """Erstellt explizit einen neuen Arc42-Projektknoten (Node).
     
-    While adding elements (like add_requirement) will implicitly create the project if missing,
-    this tool allows you to create an empty project framework explicitly. Use this when starting a new project.
+    Obwohl das Hinzufügen von Elementen (wie add_requirement) das Projekt implizit erstellt, falls es fehlt,
+    erlaubt dieses Tool die explizite Erstellung eines leeren Projekt-Frameworks. Verwende dies beim Start eines neuen Projekts.
     """
     try:
-        # Note: server.py doesn't have validate_required in local scope. Wait, it does via `_validate_required` in `.core`!
+        # Hinweis: server.py hat kein validate_required im lokalen Scope. Doch, über `_validate_required` in `.core`!
         project_name = _validate_required(project_name, "project_name")
     except ValueError as e:
         return _format_error("create_project", e)
@@ -371,22 +371,22 @@ def create_project(project_name: str) -> str:
     )
     try:
         _run_write(cypher, project_name=project_name)
-        return f"## Success\n\nProject **{project_name}** created (or already exists).\n"
+        return f"## Erfolgreich\n\nProjekt **{project_name}** wurde erstellt (oder existiert bereits).\n"
     except Exception as e:
         return _format_error("create_project", e)
 
 
 @mcp.tool()
 def list_projects() -> str:
-    """List all available Arc42 projects in the database.
-    Use this to see which projects exist before calling other tools.
+    """Listet alle vorhandenen Arc42-Projekte in der Datenbank auf.
+    Verwende dies, um zu sehen, welche Projekte existieren, bevor andere Tools aufgerufen werden.
     """
     cypher = "MATCH (d:Arc42) RETURN id(d) as id, d.name as name"
     try:
         res = _run_write(cypher)
         if not res:
             return "## Projects\n\nKeine Projekte gefunden.\n"
-        output = "## Available Projects\n\n"
+        output = "## Verfügbare Projekte\n\n"
         for r in res:
             output += f"- **{r.get('name', 'Unnamed')}** (ID: {r.get('id')})\n"
         return output
@@ -395,7 +395,7 @@ def list_projects() -> str:
 
 @mcp.tool()
 def rename_project(old_name: str, new_name: str) -> str:
-    """Rename a root project (Arc42 node) in the database."""
+    """Benennt ein Root-Projekt (Arc42 Node) in der Datenbank um."""
     try:
         old_name = _validate_required(old_name, "old_name")
         new_name = _validate_required(new_name, "new_name")
@@ -416,7 +416,7 @@ def rename_project(old_name: str, new_name: str) -> str:
         return _format_error("rename_project", e)
 
 # =========================================================================
-# Entry Point
+# Einstiegspunkt (Entry Point)
 # =========================================================================
 def main(transport: str = "stdio"):
     logger.info("arc42doc MCP Server wird gestartet …")

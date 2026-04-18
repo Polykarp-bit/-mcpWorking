@@ -12,7 +12,7 @@ from neo4j import GraphDatabase
 from neo4j.exceptions import ServiceUnavailable, SessionExpired
 
 # ---------------------------------------------------------------------------
-# Logging (QA-MA-02, QA-MA-04 – Semantic Interaction Logging)
+# Logging (Semantisches Interaktions-Logging)
 # ---------------------------------------------------------------------------
 # MCP nutzt stdio für das Protokoll — Logs immer nach stderr (nicht stdout).
 logging.basicConfig(
@@ -25,13 +25,13 @@ logging.basicConfig(
 logger = logging.getLogger("mcp.arc42")
 
 # ---------------------------------------------------------------------------
-# MCP Server Instance
+# MCP Server Instanz
 # ---------------------------------------------------------------------------
 mcp = FastMCP("arc42doc MCP Server")
 
 
 # ---------------------------------------------------------------------------
-# Configuration via Environment Variables (QA-PO-02)
+# Konfiguration über Umgebungsvariablen (Environment Variables)
 # ---------------------------------------------------------------------------
 def _env(name: str, default: str) -> str:
     val = os.getenv(name)
@@ -44,7 +44,7 @@ NEO4J_PASSWORD = _env("NEO4J_PASSWORD", "yourPassword")
 
 
 # ---------------------------------------------------------------------------
-# Neo4j Service – Data Access Layer (QA-MA-01 Protocol/Logic Separation)
+# Neo4j Service – Data Access Layer (Protokoll/Logik-Trennung)
 # ---------------------------------------------------------------------------
 _MAX_RECONNECT_ATTEMPTS = 3
 _RECONNECT_DELAY_S = 1.0
@@ -53,12 +53,12 @@ _driver = None
 
 
 def _get_driver():
-    """Get or create Neo4j driver with auto-reconnect (QA-RE-02)."""
+    """Holt oder erstellt den Neo4j-Treiber mit Auto-Reconnect."""
     global _driver
     if _driver is None:
         logger.info("Creating new Neo4j driver → %s", NEO4J_URI)
         _driver = GraphDatabase.driver(NEO4J_URI, auth=(NEO4J_USER, NEO4J_PASSWORD))
-    # Verify connectivity; reconnect on failure
+    # Verbindung überprüfen; bei Fehler neu verbinden
     for attempt in range(1, _MAX_RECONNECT_ATTEMPTS + 1):
         try:
             _driver.verify_connectivity()
@@ -81,7 +81,7 @@ def _get_driver():
 
 
 def _run_read(cypher: str, **params) -> list:
-    """Execute a read query and return list of records (QA-RE-02 auto-reconnect)."""
+    """Führt eine Lese-Query (Read) aus und gibt eine Liste von Einträgen zurück (Auto-Reconnect)."""
     driver = _get_driver()
     with driver.session() as session:
         result = session.run(cypher, **params)
@@ -89,7 +89,7 @@ def _run_read(cypher: str, **params) -> list:
 
 
 def _run_write(cypher: str, **params) -> list:
-    """Execute a write query inside a transaction (QA-RE-03 transactional writes)."""
+    """Führt eine Schreib-Query (Write) innerhalb einer Transaktion aus (transaktionale Writes)."""
     driver = _get_driver()
     with driver.session() as session:
 
@@ -101,13 +101,14 @@ def _run_write(cypher: str, **params) -> list:
 
 
 # ---------------------------------------------------------------------------
-# Input Validation (QA-SE-04 – Semantic Validation of Tool Calls)
+# ---------------------------------------------------------------------------
+# Eingabevalidierung (Semantische Validierung von Tool-Aufrufen)
 # ---------------------------------------------------------------------------
 _MAX_INPUT_LEN = 10000
 
 
 def _validate_required(value: str, field_name: str) -> str:
-    """Validate that a required string field is not empty."""
+    """Prüft, ob ein erforderliches String-Feld nicht leer ist."""
     v = str(value).strip() if value else ""
     if not v:
         raise ValueError(f"Parameter '{field_name}' darf nicht leer sein.")
@@ -119,13 +120,13 @@ def _validate_required(value: str, field_name: str) -> str:
 
 
 # ---------------------------------------------------------------------------
-# Content Cleaning (QA-PE-02 – Token Efficiency)
+# Inhaltsbereinigung (Token-Effizienz)
 # ---------------------------------------------------------------------------
 _HTML_TAG_RE = re.compile(r"<[^>]+>")
 
 
 def _clean_content(text: str) -> str:
-    """Remove HTML tags and excessive whitespace to save tokens."""
+    """Entfernt HTML-Tags und übermäßige Leerzeichen, um Tokens zu sparen."""
     if not text:
         return ""
     text = _HTML_TAG_RE.sub("", text)
@@ -134,7 +135,7 @@ def _clean_content(text: str) -> str:
 
 
 # ---------------------------------------------------------------------------
-# Helpers
+# Hilfsfunktionen (Helpers)
 # ---------------------------------------------------------------------------
 def _safe_str(x: Any, fallback: str = "") -> str:
     if x is None:
@@ -149,7 +150,7 @@ def _safe_str(x: Any, fallback: str = "") -> str:
 def _extract_title_and_content(
     node_data: Dict[str, Any], labels: List[str]
 ) -> Tuple[str, str]:
-    """Extract title and content from node based on its labels and properties."""
+    """Extrahiert Titel und Inhalt (Content) aus einem Node basierend auf seinen Labels und Properties."""
     title = ""
     content = ""
 
@@ -212,7 +213,7 @@ def _format_doc(title: str, content: str, node_type: str = "") -> str:
 
 
 def _format_error(action: str, err: Exception) -> str:
-    """Return a structured error message the LLM can interpret (QA-RE-01)."""
+    """Gibt eine strukturierte Fehlermeldung zurück, die das LLM interpretieren kann."""
     logger.error("Action '%s' failed: %s – %s", action, type(err).__name__, err)
     return (
         "## Error\n\n"

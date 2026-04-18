@@ -155,11 +155,8 @@ def update_quality_scenario(
 
 
 @mcp.tool()
-def delete_quality_scenario(scenario: str, *, parent_name: str, confirm: bool = False) -> str:
-    """Delete a Quality Scenario (Qualitätsszenario) by scenario title."""
-    guard = require_confirm(confirm, "delete_quality_scenario")
-    if guard:
-        return guard
+def delete_quality_scenario(scenario: str, *, parent_name: str) -> str:
+    """Delete a Quality Scenario (Qualitätsszenario) by scenario title. Lösche niemals etwas, ohne nochmal nachzufragen!"""
     try:
         scenario = validate_required(scenario, "scenario")
     except ValueError as e:

@@ -98,11 +98,8 @@ def update_risk(
 
 
 @mcp.tool()
-def delete_risk(description: str, *, parent_name: str, confirm: bool = False) -> str:
-    """Delete a Risk (Risiko) by its description (anforderung field)."""
-    guard = require_confirm(confirm, "delete_risk")
-    if guard:
-        return guard
+def delete_risk(description: str, *, parent_name: str) -> str:
+    """Delete a Risk (Risiko) by its description (anforderung field). Lösche niemals etwas, ohne nochmal nachzufragen!"""
     try:
         description = validate_required(description, "description")
     except ValueError as e:
@@ -201,11 +198,8 @@ def update_swot_entry(
 
 
 @mcp.tool()
-def delete_swot_entry(parent_name: str, entry_type: str, content: str, *, confirm: bool = False) -> str:
-    """Delete a specific SWOT entry."""
-    guard = require_confirm(confirm, "delete_swot_entry")
-    if guard:
-        return guard
+def delete_swot_entry(parent_name: str, entry_type: str, content: str) -> str:
+    """Delete a specific SWOT entry. Lösche niemals etwas, ohne nochmal nachzufragen!"""
     try:
         parent_name = validate_required(parent_name, "parent_name")
         entry_type = validate_required(entry_type, "entry_type")

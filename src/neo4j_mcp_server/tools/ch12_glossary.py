@@ -75,11 +75,8 @@ def update_glossary_term(
 
 
 @mcp.tool()
-def delete_glossary_term(term: str, *, parent_name: str, confirm: bool = False) -> str:
-    """Delete a Glossary term by its Begriff."""
-    guard = require_confirm(confirm, "delete_glossary_term")
-    if guard:
-        return guard
+def delete_glossary_term(term: str, *, parent_name: str) -> str:
+    """Delete a Glossary term by its Begriff. Lösche niemals etwas, ohne nochmal nachzufragen!"""
     try:
         term = validate_required(term, "term")
     except ValueError as e:

@@ -56,11 +56,8 @@ def add_business_context(
 
 
 @mcp.tool()
-def delete_business_context(*, parent_name: str, confirm: bool = False) -> str:
-    """Delete the current Business Context (Fachlicher Kontext) singleton for Chapter 3."""
-    guard = require_confirm(confirm, "delete_business_context")
-    if guard:
-        return guard
+def delete_business_context(*, parent_name: str) -> str:
+    """Delete the current Business Context (Fachlicher Kontext) singleton for Chapter 3. Lösche niemals etwas, ohne nochmal nachzufragen!"""
     cypher = (
         "MATCH (d:Arc42 {name: $parent_name})-[:hasFachlicherKontext]->(n:FachlicherKontext) "
         "DETACH DELETE n "
@@ -149,11 +146,8 @@ def add_technical_context(description: str, *, parent_name: str) -> str:
 
 
 @mcp.tool()
-def delete_technical_context(*, parent_name: str, confirm: bool = False) -> str:
-    """Delete the current Technical Context singleton for Chapter 3."""
-    guard = require_confirm(confirm, "delete_technical_context")
-    if guard:
-        return guard
+def delete_technical_context(*, parent_name: str) -> str:
+    """Delete the current Technical Context singleton for Chapter 3. Lösche niemals etwas, ohne nochmal nachzufragen!"""
     cypher = (
         "MATCH (d:Arc42 {name: $parent_name})-[:kontext]->(n:Kontext:TechnischhKontext) "
         "DETACH DELETE n "
@@ -234,11 +228,8 @@ def add_interface(
 
 
 @mcp.tool()
-def delete_interface(name: str, *, parent_name: str, confirm: bool = False) -> str:
-    """Delete an Interface (Schnittstelle) by name."""
-    guard = require_confirm(confirm, "delete_interface")
-    if guard:
-        return guard
+def delete_interface(name: str, *, parent_name: str) -> str:
+    """Delete an Interface (Schnittstelle) by name. Lösche niemals etwas, ohne nochmal nachzufragen!"""
     try:
         name = validate_required(name, "name")
     except ValueError as e:

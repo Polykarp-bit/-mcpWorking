@@ -1,10 +1,10 @@
 from __future__ import annotations
 
 from ..core import logger, mcp, _format_error, _run_write
-from .common import require_confirm, validate_required
+from .common import validate_required
 
 
-# --- Chapter 1: Einführung und Ziele ---
+# --- Kapitel 1: Einführung und Ziele ---
 
 
 @mcp.tool()
@@ -30,11 +30,8 @@ def add_requirement(task: str, *, parent_name: str) -> str:
 
 
 @mcp.tool()
-def delete_requirement(task: str, *, parent_name: str, confirm: bool = False) -> str:
-    """Delete an existing Requirement (Aufgabenstellung) by exact text."""
-    guard = require_confirm(confirm, "delete_requirement")
-    if guard:
-        return guard
+def delete_requirement(task: str, *, parent_name: str) -> str:
+    """Löscht eine vorhandene Aufgabenstellung (Requirement) anhand des exakten Textes. Lösche niemals etwas, ohne nochmal nachzufragen!"""
     try:
         task = validate_required(task, "task")
     except ValueError as e:
@@ -57,7 +54,7 @@ def delete_requirement(task: str, *, parent_name: str, confirm: bool = False) ->
 
 @mcp.tool()
 def update_requirement(old_task: str, new_task: str, *, parent_name: str) -> str:
-    """Update an existing Requirement (Aufgabenstellung) in Chapter 1."""
+    """Aktualisiert eine vorhandene Aufgabenstellung (Requirement) in Kapitel 1."""
     try:
         old_task = validate_required(old_task, "old_task")
         new_task = validate_required(new_task, "new_task")
@@ -81,7 +78,7 @@ def update_requirement(old_task: str, new_task: str, *, parent_name: str) -> str
 
 @mcp.tool()
 def add_quality_goal(goal: str, motivation: str, criteria: str = "Funktionalität", *, parent_name: str) -> str:
-    """Add a Quality Goal (Qualitätsziel) for Chapter 1."""
+    """Fügt ein Qualitätsziel (Quality Goal) für Kapitel 1 hinzu."""
     try:
         goal = validate_required(goal, "goal")
         motivation = validate_required(motivation, "motivation")
@@ -110,11 +107,8 @@ def add_quality_goal(goal: str, motivation: str, criteria: str = "Funktionalitä
 
 
 @mcp.tool()
-def delete_quality_goal(goal: str, *, parent_name: str, confirm: bool = False) -> str:
-    """Delete an existing Quality Goal (Qualitätsziel) by its title."""
-    guard = require_confirm(confirm, "delete_quality_goal")
-    if guard:
-        return guard
+def delete_quality_goal(goal: str, *, parent_name: str) -> str:
+    """Löscht ein vorhandenes Qualitätsziel (Quality Goal) anhand seines Titels. Lösche niemals etwas, ohne nochmal nachzufragen!"""
     try:
         goal = validate_required(goal, "goal")
     except ValueError as e:
@@ -137,7 +131,7 @@ def delete_quality_goal(goal: str, *, parent_name: str, confirm: bool = False) -
 
 @mcp.tool()
 def update_quality_goal(old_goal: str, new_goal: str = "", new_motivation: str = "", *, parent_name: str) -> str:
-    """Update an existing Quality Goal (Qualitätsziel) in Chapter 1."""
+    """Aktualisiert ein vorhandenes Qualitätsziel (Quality Goal) in Kapitel 1."""
     try:
         old_goal = validate_required(old_goal, "old_goal")
     except ValueError as e:
@@ -175,7 +169,7 @@ def update_quality_goal(old_goal: str, new_goal: str = "", new_motivation: str =
 
 @mcp.tool()
 def add_stakeholder(role_or_name: str, contact: str = "", expectation: str = "", *, parent_name: str) -> str:
-    """Add a Stakeholder for Chapter 1."""
+    """Fügt einen Stakeholder für Kapitel 1 hinzu."""
     try:
         role_or_name = validate_required(role_or_name, "role_or_name")
     except ValueError as e:
@@ -202,11 +196,8 @@ def add_stakeholder(role_or_name: str, contact: str = "", expectation: str = "",
 
 
 @mcp.tool()
-def delete_stakeholder(role_or_name: str, *, parent_name: str, confirm: bool = False) -> str:
-    """Delete an existing Stakeholder by role/name."""
-    guard = require_confirm(confirm, "delete_stakeholder")
-    if guard:
-        return guard
+def delete_stakeholder(role_or_name: str, *, parent_name: str) -> str:
+    """Löscht einen vorhandenen Stakeholder anhand der Rolle/des Namens. Lösche niemals etwas, ohne nochmal nachzufragen!"""
     try:
         role_or_name = validate_required(role_or_name, "role_or_name")
     except ValueError as e:
@@ -236,7 +227,7 @@ def update_stakeholder(
     *,
     parent_name: str,
 ) -> str:
-    """Update an existing Stakeholder in Chapter 1."""
+    """Aktualisiert einen vorhandenen Stakeholder in Kapitel 1."""
     try:
         old_name = validate_required(old_name, "old_name")
     except ValueError as e:

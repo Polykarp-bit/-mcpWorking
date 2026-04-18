@@ -69,11 +69,8 @@ def update_documentation(title: str, new_content: str, *, parent_name: str) -> s
 
 
 @mcp.tool()
-def delete_documentation(title: str, *, parent_name: str, confirm: bool = False) -> str:
-    """Delete an existing Konzept (Chapter 8) by title."""
-    guard = require_confirm(confirm, "delete_documentation")
-    if guard:
-        return guard
+def delete_documentation(title: str, *, parent_name: str) -> str:
+    """Delete an existing Konzept (Chapter 8) by title. Lösche niemals etwas, ohne nochmal nachzufragen!"""
     try:
         title = validate_required(title, "title")
     except ValueError as e:
