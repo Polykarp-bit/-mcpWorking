@@ -4,7 +4,7 @@ from ..core import _MAX_INPUT_LEN
 
 
 def validate_required(value: str, field_name: str) -> str:
-    """Validate that a required string field is not empty."""
+    """Prüft, ob ein erforderliches Textfeld nicht leer ist."""
     v = str(value).strip() if value else ""
     if not v:
         raise ValueError(f"Parameter '{field_name}' darf nicht leer sein.")
@@ -16,7 +16,7 @@ def validate_required(value: str, field_name: str) -> str:
 
 
 def require_confirm(confirm: bool, action: str) -> str | None:
-    """Guardrail for destructive operations (human-in-the-loop)."""
+    """Sicherheitsnetz für destruktive Operationen (Human-in-the-Loop)."""
     if confirm is True:
         return None
     return (

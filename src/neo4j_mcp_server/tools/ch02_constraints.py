@@ -9,7 +9,7 @@ from .common import require_confirm, validate_required
 
 @mcp.tool()
 def add_technical_constraint(constraint: str, background: str, *, parent_name: str) -> str:
-    """Add a Technical Constraint (Technische Randbedingung) for Chapter 2."""
+    """Fügt eine Technische Randbedingung (Technical Constraint) für Kapitel 2 hinzu."""
     try:
         constraint = validate_required(constraint, "constraint")
         background = validate_required(background, "background")
@@ -31,7 +31,7 @@ def add_technical_constraint(constraint: str, background: str, *, parent_name: s
 
 @mcp.tool()
 def add_organizational_constraint(constraint: str, background: str, *, parent_name: str) -> str:
-    """Add an Organizational Constraint (Organisatorische Randbedingung) for Chapter 2."""
+    """Fügt eine Organisatorische Randbedingung (Organizational Constraint) für Kapitel 2 hinzu."""
     try:
         constraint = validate_required(constraint, "constraint")
         background = validate_required(background, "background")
@@ -53,7 +53,7 @@ def add_organizational_constraint(constraint: str, background: str, *, parent_na
 
 @mcp.tool()
 def add_ecological_constraint(constraint: str, background: str, *, parent_name: str) -> str:
-    """Add an Ecological Constraint (Ökologische Randbedingung) for Chapter 2."""
+    """Fügt eine Ökologische Randbedingung (Ecological Constraint) für Kapitel 2 hinzu."""
     try:
         constraint = validate_required(constraint, "constraint")
         background = validate_required(background, "background")
@@ -75,7 +75,7 @@ def add_ecological_constraint(constraint: str, background: str, *, parent_name: 
 
 @mcp.tool()
 def delete_constraint(constraint: str, constraint_type: str, *, parent_name: str) -> str:
-    """Delete a constraint from Chapter 2. Lösche niemals etwas, ohne nochmal nachzufragen!"""
+    """Löscht eine Randbedingung (Constraint) aus Kapitel 2. Lösche niemals etwas, ohne nochmal nachzufragen!"""
     try:
         constraint = validate_required(constraint, "constraint")
         constraint_type = validate_required(constraint_type, "constraint_type").lower()
@@ -118,7 +118,7 @@ def update_constraint(
     *,
     parent_name: str,
 ) -> str:
-    """Update a Chapter-2 constraint (technical/organizational/ecological)."""
+    """Aktualisiert eine Randbedingung aus Kapitel 2 (technisch/organisatorisch/ökologisch)."""
     try:
         old_constraint = validate_required(old_constraint, "old_constraint")
         constraint_type = validate_required(constraint_type, "constraint_type").lower()
@@ -164,7 +164,7 @@ def update_constraint(
 
 @mcp.tool()
 def add_convention(convention: str, explanation: str, *, parent_name: str) -> str:
-    """Add a Convention (Konvention) for Chapter 2."""
+    """Fügt eine Konvention (Convention) für Kapitel 2 hinzu."""
     try:
         convention = validate_required(convention, "convention")
         explanation = validate_required(explanation, "explanation")
@@ -186,7 +186,7 @@ def add_convention(convention: str, explanation: str, *, parent_name: str) -> st
 
 @mcp.tool()
 def update_convention(old_convention: str, new_convention: str = "", new_explanation: str = "", *, parent_name: str) -> str:
-    """Update an existing Convention in Chapter 2."""
+    """Aktualisiert eine vorhandene Konvention in Kapitel 2."""
     try:
         old_convention = validate_required(old_convention, "old_convention")
     except ValueError as e:
@@ -222,7 +222,7 @@ def update_convention(old_convention: str, new_convention: str = "", new_explana
 
 @mcp.tool()
 def delete_convention(parent_name: str, convention: str) -> str:
-    """Delete a Convention (Konvention). Lösche niemals etwas, ohne nochmal nachzufragen!"""
+    """Löscht eine Konvention. Lösche niemals etwas, ohne nochmal nachzufragen!"""
     try:
         convention = validate_required(convention, "convention")
     except ValueError as e:

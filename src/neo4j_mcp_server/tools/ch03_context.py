@@ -17,7 +17,7 @@ def add_business_context(
     *,
     parent_name: str,
 ) -> str:
-    """Add Business Context (Fachlicher Kontext) for Chapter 3."""
+    """Fügt Fachlichen Kontext (Business Context) für Kapitel 3 hinzu."""
     try:
         partner = validate_required(partner, "partner")
         description = validate_required(description, "description")
@@ -57,7 +57,7 @@ def add_business_context(
 
 @mcp.tool()
 def delete_business_context(*, parent_name: str) -> str:
-    """Delete the current Business Context (Fachlicher Kontext) singleton for Chapter 3. Lösche niemals etwas, ohne nochmal nachzufragen!"""
+    """Löscht den aktuellen Fachlichen Kontext für Kapitel 3. Lösche niemals etwas, ohne nochmal nachzufragen!"""
     cypher = (
         "MATCH (d:Arc42 {name: $parent_name})-[:hasFachlicherKontext]->(n:FachlicherKontext) "
         "DETACH DELETE n "
@@ -83,7 +83,7 @@ def update_business_context(
     *,
     parent_name: str,
 ) -> str:
-    """Update the current Business Context singleton."""
+    """Aktualisiert den aktuellen Fachlichen Kontext."""
     set_clauses = []
     if partner:
         set_clauses.append("n.partner = $partner")
@@ -122,7 +122,7 @@ def update_business_context(
 
 @mcp.tool()
 def add_technical_context(description: str, *, parent_name: str) -> str:
-    """Add Technical Context (Technischer Kontext) for Chapter 3."""
+    """Fügt Technischen Kontext (Technical Context) für Kapitel 3 hinzu."""
     try:
         description = validate_required(description, "description")
     except ValueError as e:
@@ -147,7 +147,7 @@ def add_technical_context(description: str, *, parent_name: str) -> str:
 
 @mcp.tool()
 def delete_technical_context(*, parent_name: str) -> str:
-    """Delete the current Technical Context singleton for Chapter 3. Lösche niemals etwas, ohne nochmal nachzufragen!"""
+    """Löscht den aktuellen Technischen Kontext für Kapitel 3. Lösche niemals etwas, ohne nochmal nachzufragen!"""
     cypher = (
         "MATCH (d:Arc42 {name: $parent_name})-[:kontext]->(n:Kontext:TechnischhKontext) "
         "DETACH DELETE n "
@@ -165,7 +165,7 @@ def delete_technical_context(*, parent_name: str) -> str:
 
 @mcp.tool()
 def update_technical_context(new_description: str, *, parent_name: str) -> str:
-    """Update the Technical Context singleton description."""
+    """Aktualisiert die Beschreibung des Technischen Kontextes."""
     try:
         new_description = validate_required(new_description, "new_description")
     except ValueError as e:
@@ -194,7 +194,7 @@ def add_interface(
     *,
     parent_name: str,
 ) -> str:
-    """Add an Interface (Schnittstelle) for Chapter 3/Technical Context."""
+    """Fügt eine Schnittstelle (Interface) für Kapitel 3 (Technischer Kontext) hinzu."""
     try:
         name = validate_required(name, "name")
         documentation = validate_required(documentation, "documentation")
@@ -229,7 +229,7 @@ def add_interface(
 
 @mcp.tool()
 def delete_interface(name: str, *, parent_name: str) -> str:
-    """Delete an Interface (Schnittstelle) by name. Lösche niemals etwas, ohne nochmal nachzufragen!"""
+    """Löscht eine Schnittstelle anhand ihres Namens. Lösche niemals etwas, ohne nochmal nachzufragen!"""
     try:
         name = validate_required(name, "name")
     except ValueError as e:
@@ -260,7 +260,7 @@ def update_interface(
     *,
     parent_name: str,
 ) -> str:
-    """Update an Interface (Schnittstelle) by name."""
+    """Aktualisiert eine Schnittstelle anhand ihres Namens."""
     try:
         old_name = validate_required(old_name, "old_name")
     except ValueError as e:

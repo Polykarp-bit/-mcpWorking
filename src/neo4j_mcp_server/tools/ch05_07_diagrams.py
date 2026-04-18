@@ -158,7 +158,7 @@ def add_runtime_view(description: str, image_file_path: str = "", *, parent_name
 
 @mcp.tool()
 def update_runtime_view_description(new_description: str, *, parent_name: str) -> str:
-    """Update only the textual description of the Runtime View (Chapter 6)."""
+    """Aktualisiert nur die textuelle Beschreibung der Laufzeitsicht (Kapitel 6)."""
     try:
         new_description = validate_required(new_description, "new_description")
     except ValueError as e:
@@ -180,7 +180,7 @@ def update_runtime_view_description(new_description: str, *, parent_name: str) -
 
 @mcp.tool()
 def add_deployment_view(description: str, image_file_path: str = "", *, parent_name: str) -> str:
-    """Add a Deployment View (Verteilungssicht) for Chapter 7. Overwrites existing view."""
+    """Fügt eine Verteilungssicht (Kapitel 7) hinzu. Überschreibt eine existierende Ansicht."""
     try:
         description = validate_required(description, "description")
     except ValueError as e:
@@ -222,7 +222,7 @@ def add_deployment_view(description: str, image_file_path: str = "", *, parent_n
 
 @mcp.tool()
 def update_deployment_view_description(new_description: str, *, parent_name: str) -> str:
-    """Update only the textual description of the Deployment View (Chapter 7)."""
+    """Aktualisiert nur die textuelle Beschreibung der Verteilungssicht (Kapitel 7)."""
     try:
         new_description = validate_required(new_description, "new_description")
     except ValueError as e:
@@ -244,7 +244,7 @@ def update_deployment_view_description(new_description: str, *, parent_name: str
 
 @mcp.tool()
 def delete_diagram(chapter: str, *, parent_name: str) -> str:
-    """Delete a diagram for Chapter 5/6/7 (Bausteinsicht/Laufzeitsicht/Verteilungssicht). Lösche niemals etwas, ohne nochmal nachzufragen!"""
+    """Löscht ein Architekturdiagramm nach Kapitel-Spezifikation. Lösche niemals etwas, ohne nochmal nachzufragen!"""
 
     chapter = _safe_str(chapter).strip()
     cfg = {
@@ -273,7 +273,7 @@ def delete_diagram(chapter: str, *, parent_name: str) -> str:
 
 @mcp.tool()
 def get_diagram(chapter: str, *, parent_name: str) -> str:
-    """Retrieve the description and metadata of a diagram (Bausteinsicht/Laufzeitsicht/Verteilungssicht)."""
+    """Ruft die Beschreibung und Metadaten eines Diagramms ab (Bausteinsicht/Laufzeitsicht/Verteilungssicht)."""
     diagram_map = {
         "5": ("Image:Baustein", "bausteinsicht", "Bausteinsicht"),
         "6": ("Image:Laufzeit", "laufzeitsicht", "Laufzeitsicht"),

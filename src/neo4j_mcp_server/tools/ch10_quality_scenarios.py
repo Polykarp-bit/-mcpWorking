@@ -19,7 +19,7 @@ def add_quality_scenario(
     *,
     parent_name: str,
 ) -> str:
-    """Add a Quality Scenario (Qualitätsszenario) for Chapter 10."""
+    """Fügt ein Qualitätsszenario für Kapitel 10 hinzu."""
     try:
         scenario = validate_required(scenario, "scenario")
         stimulus = validate_required(stimulus, "stimulus")
@@ -86,7 +86,7 @@ def update_quality_scenario(
     *,
     parent_name: str,
 ) -> str:
-    """Update an existing Quality Scenario (Chapter 10)."""
+    """Aktualisiert ein vorhandenes Qualitätsszenario in Kapitel 10."""
     try:
         old_scenario = validate_required(old_scenario, "old_scenario")
     except ValueError as e:
@@ -156,7 +156,7 @@ def update_quality_scenario(
 
 @mcp.tool()
 def delete_quality_scenario(scenario: str, *, parent_name: str) -> str:
-    """Delete a Quality Scenario (Qualitätsszenario) by scenario title. Lösche niemals etwas, ohne nochmal nachzufragen!"""
+    """Löscht ein Qualitätsszenario anhand seines Titels. Lösche niemals etwas, ohne nochmal nachzufragen!"""
     try:
         scenario = validate_required(scenario, "scenario")
     except ValueError as e:

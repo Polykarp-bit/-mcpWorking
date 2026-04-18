@@ -9,7 +9,7 @@ from .common import require_confirm, validate_required
 
 @mcp.tool()
 def add_design_decision(decision: str, consequence: str, reasoning: str, importance: str, *, parent_name: str) -> str:
-    """Add a Design Decision (Entwurfsentscheidung) for Chapter 9."""
+    """Fügt eine Entwurfsentscheidung (Design Decision) für Kapitel 9 hinzu."""
     try:
         decision = validate_required(decision, "decision")
         consequence = validate_required(consequence, "consequence")
@@ -52,7 +52,7 @@ def update_design_decision(
     *,
     parent_name: str,
 ) -> str:
-    """Update an existing Design Decision (Entwurfsentscheidung) in Chapter 9."""
+    """Aktualisiert eine vorhandene Entwurfsentscheidung in Kapitel 9."""
     try:
         old_decision = validate_required(old_decision, "old_decision")
     except ValueError as e:
@@ -93,7 +93,7 @@ def update_design_decision(
 
 @mcp.tool()
 def delete_design_decision(decision: str, *, parent_name: str) -> str:
-    """Delete a Design Decision (Entwurfsentscheidung) by its decision text. Lösche niemals etwas, ohne nochmal nachzufragen!"""
+    """Löscht eine Entwurfsentscheidung anhand ihres Textes. Lösche niemals etwas, ohne nochmal nachzufragen!"""
     try:
         decision = validate_required(decision, "decision")
     except ValueError as e:

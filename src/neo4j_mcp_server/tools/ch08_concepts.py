@@ -9,7 +9,7 @@ from .common import require_confirm, validate_required
 
 @mcp.tool()
 def add_documentation(title: str, content: str, doc_type: str = "Konzept") -> str:
-    """Add a cross-cutting concept (Querschnittliches Konzept, Chapter 8) to the arc42 documentation."""
+    """Fügt ein querschnittliches Konzept (Chapter 8) zur arc42-Dokumentation hinzu."""
     try:
         title = validate_required(title, "title")
         content = validate_required(content, "content")
@@ -46,7 +46,7 @@ def add_documentation(title: str, content: str, doc_type: str = "Konzept") -> st
 
 @mcp.tool()
 def update_documentation(title: str, new_content: str, *, parent_name: str) -> str:
-    """Update the text content of an existing Konzept (Chapter 8)."""
+    """Aktualisiert den Text eines vorhandenen Konzepts (Chapter 8)."""
     try:
         title = validate_required(title, "title")
         new_content = validate_required(new_content, "new_content")
@@ -70,7 +70,7 @@ def update_documentation(title: str, new_content: str, *, parent_name: str) -> s
 
 @mcp.tool()
 def delete_documentation(title: str, *, parent_name: str) -> str:
-    """Delete an existing Konzept (Chapter 8) by title. Lösche niemals etwas, ohne nochmal nachzufragen!"""
+    """Löscht ein vorhandenes Konzept anhand des Titels. Lösche niemals etwas, ohne nochmal nachzufragen!"""
     try:
         title = validate_required(title, "title")
     except ValueError as e:

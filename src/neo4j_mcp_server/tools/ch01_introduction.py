@@ -9,7 +9,7 @@ from .common import validate_required
 
 @mcp.tool()
 def add_requirement(task: str, *, parent_name: str) -> str:
-    """Add a Requirement (Aufgabenstellung) to Chapter 1 – Einführung und Ziele."""
+    """Fügt eine Aufgabenstellung (Requirement) für Kapitel 1 – Einführung und Ziele hinzu."""
     try:
         task = validate_required(task, "task")
     except ValueError as e:

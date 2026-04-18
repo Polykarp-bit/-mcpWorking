@@ -15,13 +15,13 @@ from ..core import (
 
 @mcp.tool()
 def search_docs(query: str) -> str:
-    """Search across all arc42 documentation nodes (case-insensitive).
+    """Sucht in allen arc42-Dokumentationsknoten (Case-Insensitive).
 
-    Searches titles, descriptions, content and all text properties.
-    Returns up to 50 matching results in Markdown format.
+    Durchsucht Titel, Beschreibungen, Inhalte und alle Text-Eigenschaften.
+    Gibt bis zu 50 passende Ergebnisse im Markdown-Format zurück.
 
     Args:
-        query: Search term (e.g. 'Bausteinsicht', 'Sicherheit').
+        query: Suchbegriff (z.B. 'Bausteinsicht', 'Sicherheit').
     """
     q = _safe_str(query).strip()
     if not q:
@@ -76,10 +76,10 @@ def search_docs(query: str) -> str:
 
 @mcp.tool()
 def list_titles() -> str:
-    """List all node titles from the arc42 documentation (sorted alphabetically).
+    """Listet alle Knotentitel der arc42-Dokumentation alphabetisch sortiert auf.
 
-    Returns a Markdown list of all unique titles/names found in the database.
-    Useful to get an overview of available documentation content.
+    Gibt eine Markdown-Liste aller eindeutigen Titel/Namen in der Datenbank zurück.
+    Nützlich, um sich einen Überblick über die verfügbare Dokumentation zu verschaffen.
     """
     logger.info("LLM fordert Titelliste an")
     cypher = (

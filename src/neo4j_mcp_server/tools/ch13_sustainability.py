@@ -9,7 +9,7 @@ from .common import require_confirm, validate_required
 
 @mcp.tool()
 def add_sustainability_goal(goal: str, motivation: str, priority: str, saving: str, *, parent_name: str) -> str:
-    """Add a Sustainability Goal (Kap. 13) to arc42 documentation."""
+    """Fügt ein Nachhaltigkeitsziel (Kap. 13) zur arc42-Dokumentation hinzu."""
     try:
         goal = validate_required(goal, "goal")
         motivation = validate_required(motivation, "motivation")
@@ -47,7 +47,7 @@ def add_sustainability_goal(goal: str, motivation: str, priority: str, saving: s
 
 @mcp.tool()
 def delete_sustainability_goal(goal: str, *, parent_name: str) -> str:
-    """Delete a Sustainability Goal (Kap. 13) by goal title. Lösche niemals etwas, ohne nochmal nachzufragen!"""
+    """Löscht ein Nachhaltigkeitsziel (Kap. 13) anhand des Titels. Lösche niemals etwas, ohne nochmal nachzufragen!"""
     try:
         goal = validate_required(goal, "goal")
     except ValueError as e:

@@ -9,7 +9,7 @@ from .common import require_confirm, validate_required
 
 @mcp.tool()
 def add_solution_strategy(strategy: str, *, parent_name: str) -> str:
-    """Add a Solution Strategy (Lösungsstrategie) for Chapter 4."""
+    """Fügt eine Lösungsstrategie für Kapitel 4 hinzu."""
     try:
         strategy = validate_required(strategy, "strategy")
     except ValueError as e:
@@ -30,7 +30,7 @@ def add_solution_strategy(strategy: str, *, parent_name: str) -> str:
 
 @mcp.tool()
 def delete_solution_strategy(*, parent_name: str) -> str:
-    """Delete all Solution Strategy entries for Chapter 4 for a project. Lösche niemals etwas, ohne nochmal nachzufragen!"""
+    """Löscht die Lösungsstrategie für Kapitel 4. Lösche niemals etwas, ohne nochmal nachzufragen!"""
     cypher = (
         "MATCH (d:Arc42 {name: $parent_name})-[:hatLoesung]->(n:LoesungsStrategie) "
         "DETACH DELETE n "
@@ -79,7 +79,7 @@ def update_solution_strategy(old_strategy: str, new_strategy: str, *, parent_nam
 
 @mcp.tool()
 def add_project_meeting(parent_name: str, name: str, frequency: int, repetition: str, meeting_type: str) -> str:
-    """Add a project meeting entry (Chapter 4 – Solution Strategy)."""
+    """Fügt einen Projektmeeting-Eintrag (Kapitel 4) hinzu (z.B. Kick-off, Reviews)."""
     try:
         parent_name = validate_required(parent_name, "parent_name")
         name = validate_required(name, "name")
@@ -110,7 +110,7 @@ def add_project_meeting(parent_name: str, name: str, frequency: int, repetition:
 
 @mcp.tool()
 def delete_project_meeting(parent_name: str, name: str) -> str:
-    """Delete a specific Project Meeting (Chapter 4 – Solution Strategy). Lösche niemals etwas, ohne nochmal nachzufragen!"""
+    """Löscht einen Projektmeeting-Eintrag (Kapitel 4). Lösche niemals etwas, ohne nochmal nachzufragen!"""
     try:
         parent_name = validate_required(parent_name, "parent_name")
         name = validate_required(name, "name")

@@ -9,7 +9,7 @@ from .common import require_confirm, validate_required
 
 @mcp.tool()
 def add_risk(description: str, impact: str, probability: str, status: str, *, parent_name: str) -> str:
-    """Add a Risk (Risiko) for Chapter 11."""
+    """Fügt ein Risiko (Risk) für Kapitel 11 hinzu."""
     try:
         description = validate_required(description, "description")
         impact = validate_required(impact, "impact")
@@ -56,7 +56,7 @@ def update_risk(
     *,
     parent_name: str,
 ) -> str:
-    """Update an existing Risk (Risiko) in Chapter 11."""
+    """Aktualisiert ein Risiko in Kapitel 11."""
     try:
         old_description = validate_required(old_description, "old_description")
     except ValueError as e:
@@ -99,7 +99,7 @@ def update_risk(
 
 @mcp.tool()
 def delete_risk(description: str, *, parent_name: str) -> str:
-    """Delete a Risk (Risiko) by its description (anforderung field). Lösche niemals etwas, ohne nochmal nachzufragen!"""
+    """Löscht ein Risiko anhand seiner Beschreibung. Lösche niemals etwas, ohne nochmal nachzufragen!"""
     try:
         description = validate_required(description, "description")
     except ValueError as e:

@@ -9,7 +9,7 @@ from .common import require_confirm, validate_required
 
 @mcp.tool()
 def add_glossary_term(term: str, description: str, *, parent_name: str) -> str:
-    """Add a Glossary term (Glossar) for Chapter 12."""
+    """Fügt einen Eintrag zum Glossar (Chapter 12) hinzu."""
     try:
         term = validate_required(term, "term")
         description = validate_required(description, "description")
@@ -38,7 +38,7 @@ def update_glossary_term(
     *,
     parent_name: str,
 ) -> str:
-    """Update an existing Glossary Term (Glossar) in Chapter 12."""
+    """Aktualisiert einen existierenden Glossar-Eintrag in Kapitel 12."""
     try:
         old_term = validate_required(old_term, "old_term")
     except ValueError as e:
@@ -76,7 +76,7 @@ def update_glossary_term(
 
 @mcp.tool()
 def delete_glossary_term(term: str, *, parent_name: str) -> str:
-    """Delete a Glossary term by its Begriff. Lösche niemals etwas, ohne nochmal nachzufragen!"""
+    """Löscht einen Glossar-Eintrag anhand seines Begriffs. Lösche niemals etwas, ohne nochmal nachzufragen!"""
     try:
         term = validate_required(term, "term")
     except ValueError as e:
