@@ -350,7 +350,9 @@ def generate_test_cases(parent_name: str) -> str:
         "Sortiere die Ausgabe nach Typ."
     )
 
-# --- Neu hinzugefuegte Tools (Dynamische Projekte) ---
+# =========================================================================
+# MCP PROJEKTVERWALTUNG
+# =========================================================================
 
 @mcp.tool()
 def create_project(project_name: str) -> str:
@@ -360,7 +362,6 @@ def create_project(project_name: str) -> str:
     erlaubt dieses Tool die explizite Erstellung eines leeren Projekt-Frameworks. Verwende dies beim Start eines neuen Projekts.
     """
     try:
-        # Hinweis: server.py hat kein validate_required im lokalen Scope. Doch, über `_validate_required` in `.core`!
         project_name = _validate_required(project_name, "project_name")
     except ValueError as e:
         return _format_error("create_project", e)
