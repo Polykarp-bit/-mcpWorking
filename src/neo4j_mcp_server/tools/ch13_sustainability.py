@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from ..core import logger, mcp, _format_error, _run_write
-from .common import require_confirm, validate_required
+from .common import validate_required
 
 
 # --- Chapter 13: Nachhaltigkeit ---
@@ -78,7 +78,7 @@ def update_sustainability_goal(
     *,
     parent_name: str,
 ) -> str:
-    """Update an existing Sustainability Goal (Kap. 13)."""
+    """Aktualisiert ein bestehendes Nachhaltigkeitsziel (Kap. 13)."""
     try:
         old_goal = validate_required(old_goal, "old_goal")
     except ValueError as e:

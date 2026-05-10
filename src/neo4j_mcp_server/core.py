@@ -34,6 +34,7 @@ mcp = FastMCP("arc42doc MCP Server")
 # Konfiguration über Umgebungsvariablen (Environment Variables)
 # ---------------------------------------------------------------------------
 def _env(name: str, default: str) -> str:
+    """Liest eine Umgebungsvariable aus und gibt `default` zurück, wenn sie nicht gesetzt oder leer ist."""
     val = os.getenv(name)
     return val if val is not None and val != "" else default
 
@@ -138,6 +139,7 @@ def _clean_content(text: str) -> str:
 # Hilfsfunktionen (Helpers)
 # ---------------------------------------------------------------------------
 def _safe_str(x: Any, fallback: str = "") -> str:
+    """Konvertiert einen beliebigen Wert sicher zu einem String; liefert `fallback`, wenn der Wert `None`/leer ist oder die Konvertierung fehlschlägt."""
     if x is None:
         return fallback
     try:
@@ -203,6 +205,7 @@ def _extract_title_and_content(
 
 
 def _format_doc(title: str, content: str, node_type: str = "") -> str:
+    """Formatiert einen Dokumentationsknoten als Markdown-Block (`##`-Überschrift mit optionalem `[node_type]`-Präfix); ersetzt fehlenden Inhalt durch einen Platzhalter."""
     title = title.strip() or "Untitled"
     content = content.strip()
     if not content:

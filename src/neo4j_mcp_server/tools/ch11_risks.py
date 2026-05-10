@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from ..core import logger, mcp, _format_error, _run_write
-from .common import require_confirm, validate_required
+from .common import validate_required
 
 
 # --- Chapter 11: Risiken ---
@@ -122,9 +122,10 @@ def delete_risk(description: str, *, parent_name: str) -> str:
 
 @mcp.tool()
 def add_swot(parent_name: str, strength: str = "", weakness: str = "", opportunity: str = "", threat: str = "") -> str:
-    """Add one or more SWOT entries for Chapter 11 (stored as TextEingabe nodes)."""
+    """Fügt einen oder mehrere SWOT-Einträge für Kapitel 11 hinzu (gespeichert als TextEingabe-Knoten)."""
 
     def _add_single(entry_type: str, content: str):
+        """Legt einen einzelnen SWOT-Eintrag (`STRENGTH`/`WEAKNESS`/`OPPORTUNITY`/`THREAT`) als `TextEingabe`-Knoten an und verknüpft ihn über `:hasTextEingabe` mit dem Arc42-Projekt."""
         cypher = (
             "MATCH (d:Arc42 {name: $parent_name}) "
             "CREATE (n:TextEingabe {type: $type, content: $content}) "
@@ -168,7 +169,7 @@ def update_swot_entry(
     old_content: str,
     new_content: str,
 ) -> str:
-    """Update a specific SWOT entry by type and old content."""
+    """Aktualisiert einen bestimmten SWOT-Eintrag nach Typ und altem Inhalt."""
     try:
         parent_name = validate_required(parent_name, "parent_name")
         entry_type = validate_required(entry_type, "entry_type")

@@ -14,14 +14,14 @@ from ..core import (
     _run_write,
     _safe_str,
 )
-from .common import require_confirm, validate_required
+from .common import validate_required
 
 
 # --- Chapter 5–7: Bausteinsicht / Laufzeitsicht / Verteilungssicht (Diagrams) ---
 
 
 def _read_image_file(image_file_path: str) -> tuple[bytes, str, str]:
-    """Read image bytes and return (bytes, mime_type, file_name)."""
+    """Liest Bild-Bytes und gibt (bytes, mime_type, file_name) zurück."""
     if not image_file_path:
         return b"", "", ""
     try:
@@ -45,7 +45,7 @@ def _read_image_file(image_file_path: str) -> tuple[bytes, str, str]:
 
 @mcp.tool()
 def add_building_block_view(description: str, image_file_path: str = "", *, parent_name: str) -> str:
-    """Add a Building Block View (Bausteinsicht) for Chapter 5. Overwrites existing view."""
+    """Fügt eine Bausteinsicht (Building Block View) für Kapitel 5 hinzu. Überschreibt eine existierende Ansicht."""
     try:
         description = validate_required(description, "description")
     except ValueError as e:
@@ -88,7 +88,7 @@ def add_building_block_view(description: str, image_file_path: str = "", *, pare
 
 @mcp.tool()
 def update_building_block_view_description(new_description: str, *, parent_name: str) -> str:
-    """Update only the textual description of the Building Block View (Chapter 5)."""
+    """Aktualisiert nur die textuelle Beschreibung der Bausteinsicht (Kapitel 5)."""
     try:
         new_description = validate_required(new_description, "new_description")
     except ValueError as e:
@@ -116,7 +116,7 @@ def update_building_block_view_description(new_description: str, *, parent_name:
 
 @mcp.tool()
 def add_runtime_view(description: str, image_file_path: str = "", *, parent_name: str) -> str:
-    """Add a Runtime View (Laufzeitsicht) for Chapter 6. Overwrites existing view."""
+    """Fügt eine Laufzeitsicht (Runtime View) für Kapitel 6 hinzu. Überschreibt eine existierende Ansicht."""
     try:
         description = validate_required(description, "description")
     except ValueError as e:
@@ -318,7 +318,7 @@ _KROKI_TIMEOUT_S = 30
 
 
 def _mermaid_to_png_bytes(mermaid_code: str) -> bytes:
-    """Send Mermaid code to Kroki API and return raw PNG bytes."""
+    """Sendet Mermaid-Code an die Kroki-API und gibt rohe PNG-Bytes zurück."""
     compressed = zlib.compress(mermaid_code.encode("utf-8"), 9)
     encoded = base64.urlsafe_b64encode(compressed).decode("ascii")
     url = f"{_KROKI_BASE_URL}/mermaid/png/{encoded}"
@@ -343,7 +343,7 @@ def generate_mermaid_diagram(
     *,
     parent_name: str,
 ) -> str:
-    """Generate a Mermaid diagram via Kroki API and save the PNG to Neo4j."""
+    """Generiert ein Mermaid-Diagramm über die Kroki-API und speichert das PNG in Neo4j."""
     chapter_map = {
         "5": {
             "label_old": "Image:Baustein",

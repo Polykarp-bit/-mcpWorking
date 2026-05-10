@@ -50,18 +50,6 @@ def _validate_required(value: str, field_name: str) -> str:
     return v
 
 
-def _require_confirm(confirm: bool, action: str) -> str | None:
-    """Guardrail für destruktive Operationen (Human-in-the-Loop).
-
-    Gibt eine Markdown-Nachricht zurück, falls die Bestätigung fehlt, ansonsten None.
-    """
-    if confirm is True:
-        return None
-    return (
-        "## Confirmation Required\n\n"
-        f"Diese Aktion ist destruktiv (**{action}**). "
-        "Setze `confirm=true`, um fortzufahren.\n"
-    )
 
 @mcp.tool()
 def read_arc42_chapter(chapter: str, *, parent_name: str) -> str:
@@ -420,6 +408,7 @@ def rename_project(old_name: str, new_name: str) -> str:
 # Einstiegspunkt (Entry Point)
 # =========================================================================
 def main(transport: str = "stdio"):
+    """Einstiegspunkt des MCP-Servers: loggt den Start und betreibt die FastMCP-Instanz mit dem angegebenen Transport (Default: `stdio`)."""
     logger.info("arc42doc MCP Server wird gestartet …")
     mcp.run(transport=transport)
 

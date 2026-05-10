@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from ..core import logger, mcp, _format_error, _run_write
-from .common import require_confirm, validate_required
+from .common import validate_required
 
 
 # --- Chapter 4: Lösungsstrategie ---
@@ -48,7 +48,7 @@ def delete_solution_strategy(*, parent_name: str) -> str:
 
 @mcp.tool()
 def update_solution_strategy(old_strategy: str, new_strategy: str, *, parent_name: str) -> str:
-    """Update a specific Solution Strategy entry."""
+    """Aktualisiert einen bestimmten Lösungsstrategie-Eintrag."""
     try:
         old_strategy = validate_required(old_strategy, "old_strategy")
         new_strategy = validate_required(new_strategy, "new_strategy")
@@ -141,7 +141,7 @@ def update_project_meeting(
     new_repetition: str = "",
     new_meeting_type: str = "",
 ) -> str:
-    """Update a specific Project Meeting (Chapter 4 – Solution Strategy)."""
+    """Aktualisiert ein bestimmtes Projektmeeting (Kapitel 4 – Lösungsstrategie)."""
     try:
         parent_name = validate_required(parent_name, "parent_name")
         old_name = validate_required(old_name, "old_name")

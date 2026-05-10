@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from ..core import logger, mcp, _format_error, _run_write
-from .common import require_confirm, validate_required
+from .common import validate_required
 
 
 # --- Chapter 3: Kontextabgrenzung ---

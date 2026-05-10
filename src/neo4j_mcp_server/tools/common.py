@@ -14,14 +14,3 @@ def validate_required(value: str, field_name: str) -> str:
         )
     return v
 
-
-def require_confirm(confirm: bool, action: str) -> str | None:
-    """Sicherheitsnetz für destruktive Operationen (Human-in-the-Loop)."""
-    if confirm is True:
-        return None
-    return (
-        "## Confirmation Required\n\n"
-        f"Diese Aktion ist destruktiv (**{action}**). "
-        "Setze `confirm=true`, um fortzufahren.\n"
-    )
-
