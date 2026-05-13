@@ -16,7 +16,6 @@ from .tools import ch09_decisions as _tools_ch09  # noqa: F401
 from .tools import ch10_quality_scenarios as _tools_ch10  # noqa: F401
 from .tools import ch11_risks as _tools_ch11  # noqa: F401
 from .tools import ch12_glossary as _tools_ch12  # noqa: F401
-from .tools import ch13_sustainability as _tools_ch13  # noqa: F401
 from .tools import analysis as _tools_analysis  # noqa: F401
 
 from .core import (
@@ -61,10 +60,10 @@ def read_arc42_chapter(chapter: str, *, parent_name: str) -> str:
       4=Lösungsstrategie, 5=Bausteinsicht, 6=Laufzeitsicht,
       7=Verteilungssicht, 8=Querschnittliche Konzepte,
       9=Entwurfsentscheidungen, 10=Qualitätsszenarien,
-      11=Risiken und SWOT, 12=Glossar, 13=Nachhaltigkeit.
+      11=Risiken und SWOT, 12=Glossar.
 
     Args:
-        chapter: Kapitelnummer als String ('1' bis '13').
+        chapter: Kapitelnummer als String ('1' bis '12').
         parent_name: Name des arc42-Projekts.
     """
     logger.info("LLM fordert arc42-Kapitel %s an", chapter)
@@ -73,7 +72,8 @@ def read_arc42_chapter(chapter: str, *, parent_name: str) -> str:
         "1": [
             ("Aufgabenstellung", "hasRequirement", "aufgabe"),
             ("Qualitaetsziel", "hasQualityGoal", "qualitaetsziel"),
-            ("Stakeholder", "hasStakeholder", "roleOrName")
+            ("Stakeholder", "hasStakeholder", "roleOrName"),
+            ("Nachhaltigkeitsziele", "hasNachhaltigkeitsziele", "greengoal")
         ],
         "2": [
             ("TechnischeRandbedingung", "hatTechnischRandbedingung", "randbedingung"),
@@ -96,12 +96,11 @@ def read_arc42_chapter(chapter: str, *, parent_name: str) -> str:
             ("Risiko", "hasRisiko", "anforderung"),
             ("TextEingabe", "hasTextEingabe", "content"),
         ],
-        "12": [("Glossar", "hasGlossar", "begriff")],
-        "13": [("Nachhaltigkeitsziele", "hasNachhaltigkeitsziele", "greengoal")]
+        "12": [("Glossar", "hasGlossar", "begriff")]
     }
 
     if chapter not in chapter_map:
-        return f"Unbekanntes Kapitel: {chapter}. Bitte 1-13 angeben."
+        return f"Unbekanntes Kapitel: {chapter}. Bitte 1-12 angeben."
 
     chapter_names = {
         "1": "Einführung und Ziele", "2": "Randbedingungen",
@@ -110,7 +109,6 @@ def read_arc42_chapter(chapter: str, *, parent_name: str) -> str:
         "7": "Verteilungssicht", "8": "Querschnittliche Konzepte",
         "9": "Entwurfsentscheidungen", "10": "Qualitätsszenarien",
         "11": "Risiken und SWOT", "12": "Glossar",
-        "13": "Nachhaltigkeit",
     }
     output = [f"# Kapitel {chapter}: {chapter_names.get(chapter, '')}\n"]
 
@@ -160,9 +158,9 @@ def read_arc42_chapter(chapter: str, *, parent_name: str) -> str:
 
 @mcp.resource("arc42://chapter/{chapter_number}")
 def get_chapter_resource(chapter_number: str) -> str:
-    """Liest ein bestimmtes arc42-Kapitel (1-13) als eine MCP Resource.
+    """Liest ein bestimmtes arc42-Kapitel (1-12) als eine MCP Resource.
 
-    URI-Muster: arc42://chapter/1  bis  arc42://chapter/13
+    URI-Muster: arc42://chapter/1  bis  arc42://chapter/12
 
     Benötigt die Umgebungsvariable (Env) ``ARC42_PARENT_NAME`` (Arc42-Projektname in Neo4j), analog zu den MCP Tool-Aufrufen.
     """
@@ -190,7 +188,6 @@ def get_overview_resource() -> str:
         "7": "Verteilungssicht", "8": "Querschnittliche Konzepte",
         "9": "Entwurfsentscheidungen", "10": "Qualitätsszenarien",
         "11": "Risiken und SWOT", "12": "Glossar",
-        "13": "Nachhaltigkeit",
     }
     for num, name in chapter_names.items():
         parts.append(f"- **Kapitel {num}**: {name} → `arc42://chapter/{num}`")

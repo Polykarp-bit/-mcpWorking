@@ -8,7 +8,7 @@ from .common import validate_required
 
 
 @mcp.tool()
-def add_documentation(title: str, content: str, doc_type: str = "Konzept") -> str:
+def add_documentation(title: str, content: str, doc_type: str = "Konzept", *, parent_name: str) -> str:
     """Fügt ein querschnittliches Konzept (Chapter 8) zur arc42-Dokumentation hinzu."""
     try:
         title = validate_required(title, "title")
@@ -17,7 +17,6 @@ def add_documentation(title: str, content: str, doc_type: str = "Konzept") -> st
         return _format_error("add_documentation", e)
 
     logger.info("Tool add_documentation aufgerufen: title='%s'", title)
-    parent_arc42 = "Neo4j MCP Server"
 
     if doc_type == "Konzept" or doc_type == "Documentation":
         cypher = (
@@ -38,8 +37,8 @@ def add_documentation(title: str, content: str, doc_type: str = "Konzept") -> st
         )
 
     try:
-        _run_write(cypher, title=title, content=content, doc_type=doc_type, parent_name=parent_arc42)
-        return f"## Success\n\nAdded/Updated documentation: **{title}** linked to **{parent_arc42}**\n"
+        _run_write(cypher, title=title, content=content, doc_type=doc_type, parent_name=parent_name)
+        return f"## Success\n\nAdded/Updated documentation: **{title}** linked to **{parent_name}**\n"
     except Exception as e:
         return _format_error("add_documentation", e)
 

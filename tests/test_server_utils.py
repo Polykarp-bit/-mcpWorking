@@ -46,13 +46,3 @@ def test_extract_title_and_content_text_eingabe_title_type():
     assert title == "Kapitel 1"
     assert content == ""
 
-
-def test_require_confirm_blocks_by_default():
-    from neo4j_mcp_server import server
-
-    msg = server._require_confirm(False, "delete_anything")
-    assert msg is not None
-    assert "Confirmation Required" in msg
-
-    assert server._require_confirm(True, "delete_anything") is None
-

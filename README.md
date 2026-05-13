@@ -70,18 +70,6 @@ Alternative Startmethode (gleiches Repo, nutzt `.venv` falls vorhanden):
 
 Details: **`INSTALLATION.md`**
 
-## Docker Container
-
-```bash
-docker build -t neo4j-mcp-server .
-docker run --rm -it \
-  -e NEO4J_URI="bolt://host.docker.internal:7687" \
-  -e NEO4J_USER="neo4j" \
-  -e NEO4J_PASSWORD="dein_passwort" \
-  -e ARC42_PARENT_NAME="dein_projektname" \
-  neo4j-mcp-server
-```
-
 ## Verfügbare Tools
 
 - **search_docs**, **list_titles**, **read_arc42_chapter**, viele CRUD-Tools pro arc42-Kapitel, **list_projects**, **rename_project**, …

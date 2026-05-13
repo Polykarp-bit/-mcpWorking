@@ -168,6 +168,123 @@ def update_quality_goal(old_goal: str, new_goal: str = "", new_motivation: str =
 
 
 @mcp.tool()
+def add_sustainability_goal(
+    goal: str,
+    motivation: str,
+    prioritaet: str = "",
+    einsparung: str = "",
+    *,
+    parent_name: str,
+) -> str:
+    """Fügt ein Nachhaltigkeitsziel (Sustainability Goal) für Kapitel 1 – Einführung und Ziele hinzu."""
+    try:
+        goal = validate_required(goal, "goal")
+        motivation = validate_required(motivation, "motivation")
+    except ValueError as e:
+        return _format_error("add_sustainability_goal", e)
+
+    cypher = (
+        "MERGE (d:Arc42 {name: $parent_name}) "
+        "MERGE (n:Nachhaltigkeitsziele {greengoal: $goal}) "
+        "SET n.motivation = $motivation, n.prio = $prioritaet, n.saving = $einsparung "
+        "MERGE (d)-[:hasNachhaltigkeitsziele]->(n) "
+        "RETURN n"
+    )
+    logger.info("Tool add_sustainability_goal: '%s'", goal)
+    try:
+        _run_write(
+            cypher,
+            goal=goal,
+            motivation=motivation,
+            prioritaet=prioritaet,
+            einsparung=einsparung,
+            parent_name=parent_name,
+        )
+        return (
+            f"## Success\n\nAdded Sustainability Goal: **{goal}**\n"
+            f"Motivation: {motivation}\n"
+            f"Priorität: {prioritaet or '-'} | Einsparung: {einsparung or '-'}\n"
+        )
+    except Exception as e:
+        return _format_error("add_sustainability_goal", e)
+
+
+@mcp.tool()
+def delete_sustainability_goal(goal: str, *, parent_name: str) -> str:
+    """Löscht ein vorhandenes Nachhaltigkeitsziel (Sustainability Goal) anhand seines Titels. Lösche niemals etwas, ohne nochmal nachzufragen!"""
+    try:
+        goal = validate_required(goal, "goal")
+    except ValueError as e:
+        return _format_error("delete_sustainability_goal", e)
+
+    cypher = (
+        "MATCH (d:Arc42 {name: $parent_name})-[:hasNachhaltigkeitsziele]->(n:Nachhaltigkeitsziele {greengoal: $goal}) "
+        "DETACH DELETE n "
+        "RETURN count(n) as c"
+    )
+    try:
+        res = _run_write(cypher, goal=goal, parent_name=parent_name)
+        deleted = res[0]["c"]
+        if deleted > 0:
+            return f"## Success\n\nDeleted Sustainability Goal: **{goal}**\n"
+        return f"## Warning\n\nNo matching sustainability goal '{goal}' found.\n"
+    except Exception as e:
+        return _format_error("delete_sustainability_goal", e)
+
+
+@mcp.tool()
+def update_sustainability_goal(
+    old_goal: str,
+    new_goal: str = "",
+    new_motivation: str = "",
+    new_prioritaet: str = "",
+    new_einsparung: str = "",
+    *,
+    parent_name: str,
+) -> str:
+    """Aktualisiert ein vorhandenes Nachhaltigkeitsziel (Sustainability Goal) in Kapitel 1."""
+    try:
+        old_goal = validate_required(old_goal, "old_goal")
+    except ValueError as e:
+        return _format_error("update_sustainability_goal", e)
+
+    logger.info("Tool update_sustainability_goal: '%s'", old_goal)
+    set_clauses = []
+    if new_goal:
+        set_clauses.append("n.greengoal = $new_goal")
+    if new_motivation:
+        set_clauses.append("n.motivation = $new_motivation")
+    if new_prioritaet:
+        set_clauses.append("n.prio = $new_prioritaet")
+    if new_einsparung:
+        set_clauses.append("n.saving = $new_einsparung")
+
+    if not set_clauses:
+        return "## Error\n\nMindestens ein neues Feld muss angegeben werden.\n"
+
+    cypher = (
+        "MATCH (d:Arc42 {name: $parent_name})-[:hasNachhaltigkeitsziele]->(n:Nachhaltigkeitsziele {greengoal: $old_goal}) "
+        f"SET {', '.join(set_clauses)} "
+        "RETURN n"
+    )
+    try:
+        records = _run_write(
+            cypher,
+            old_goal=old_goal,
+            new_goal=new_goal,
+            new_motivation=new_motivation,
+            new_prioritaet=new_prioritaet,
+            new_einsparung=new_einsparung,
+            parent_name=parent_name,
+        )
+        if not records:
+            return f"## Not Found\n\nSustainability Goal '{old_goal}' not found.\n"
+        return f"## Success\n\nUpdated Sustainability Goal: **{old_goal}**\n"
+    except Exception as e:
+        return _format_error("update_sustainability_goal", e)
+
+
+@mcp.tool()
 def add_stakeholder(role_or_name: str, contact: str = "", expectation: str = "", *, parent_name: str) -> str:
     """Fügt einen Stakeholder für Kapitel 1 hinzu."""
     try:

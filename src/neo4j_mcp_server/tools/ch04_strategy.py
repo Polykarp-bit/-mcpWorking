@@ -8,56 +8,115 @@ from .common import validate_required
 
 
 @mcp.tool()
-def add_solution_strategy(strategy: str, *, parent_name: str) -> str:
-    """Fügt eine Lösungsstrategie für Kapitel 4 hinzu."""
+def add_solution_strategy(
+    strategy: str,
+    qg_id: str = "null",
+    n_id: str = "null",
+    *,
+    parent_name: str,
+) -> str:
+    """Fügt eine Lösungsstrategie für Kapitel 4 hinzu.
+
+    Args:
+        strategy: Beschreibungstext der Lösungsstrategie.
+        qg_id: Optional. Referenz-ID eines verknüpften Qualitätsziels als Integer-String
+            (z. B. "157"). Default "null" = nicht verknüpft (Sentinel-Wert wie im UI).
+        n_id: Optional. Referenz-ID eines verknüpften Nachhaltigkeitsziels als
+            Integer-String. Default "null" = nicht verknüpft.
+        parent_name: Name des arc42-Projekts.
+    """
     try:
         strategy = validate_required(strategy, "strategy")
     except ValueError as e:
         return _format_error("add_solution_strategy", e)
     cypher = (
         "MERGE (d:Arc42 {name: $parent_name}) "
-        "CREATE (n:LoesungsStrategie {strategy: $strategy}) "
+        "CREATE (n:LoesungsStrategie {strategy: $strategy, qgId: $qg_id, nId: $n_id}) "
         "MERGE (d)-[:hatLoesung]->(n) "
         "RETURN n"
     )
     logger.info("Tool add_solution_strategy aufgerufen")
     try:
-        _run_write(cypher, strategy=strategy, parent_name=parent_name)
+        _run_write(
+            cypher,
+            strategy=strategy,
+            qg_id=qg_id,
+            n_id=n_id,
+            parent_name=parent_name,
+        )
         return "## Success\n\nAdded Solution Strategy.\n"
     except Exception as e:
         return _format_error("add_solution_strategy", e)
 
 
 @mcp.tool()
-def delete_solution_strategy(*, parent_name: str) -> str:
-    """Löscht die Lösungsstrategie für Kapitel 4. Lösche niemals etwas, ohne nochmal nachzufragen!"""
-    cypher = (
-        "MATCH (d:Arc42 {name: $parent_name})-[:hatLoesung]->(n:LoesungsStrategie) "
-        "DETACH DELETE n "
-        "RETURN count(n) as c"
-    )
+def delete_solution_strategy(strategy: str = "", *, parent_name: str) -> str:
+    """Löscht eine Lösungsstrategie für Kapitel 4.
+
+    Wird `strategy` angegeben, wird nur dieser eine Eintrag gelöscht.
+    Ohne Angabe werden **alle** Lösungsstrategien des Projekts gelöscht.
+    Lösche niemals etwas, ohne nochmal nachzufragen!
+    """
+    if strategy:
+        cypher = (
+            "MATCH (d:Arc42 {name: $parent_name})-[:hatLoesung]->(n:LoesungsStrategie {strategy: $strategy}) "
+            "DETACH DELETE n "
+            "RETURN count(n) as c"
+        )
+        params = {"parent_name": parent_name, "strategy": strategy}
+    else:
+        cypher = (
+            "MATCH (d:Arc42 {name: $parent_name})-[:hatLoesung]->(n:LoesungsStrategie) "
+            "DETACH DELETE n "
+            "RETURN count(n) as c"
+        )
+        params = {"parent_name": parent_name}
     try:
-        res = _run_write(cypher, parent_name=parent_name)
+        res = _run_write(cypher, **params)
         deleted = res[0]["c"]
         if deleted > 0:
-            return "## Success\n\nDeleted Solution Strategy entries.\n"
+            return f"## Success\n\nDeleted {deleted} Solution Strategy entry/entries.\n"
         return "## Warning\n\nNo Solution Strategy entries found.\n"
     except Exception as e:
         return _format_error("delete_solution_strategy", e)
 
 
 @mcp.tool()
-def update_solution_strategy(old_strategy: str, new_strategy: str, *, parent_name: str) -> str:
-    """Aktualisiert einen bestimmten Lösungsstrategie-Eintrag."""
+def update_solution_strategy(
+    old_strategy: str,
+    new_strategy: str = "",
+    new_qg_id: str = "",
+    new_n_id: str = "",
+    *,
+    parent_name: str,
+) -> str:
+    """Aktualisiert einen bestimmten Lösungsstrategie-Eintrag.
+
+    Args:
+        old_strategy: Aktueller Strategietext zur Identifikation des Knotens.
+        new_strategy: Optional neuer Strategietext.
+        new_qg_id: Optional neue Qualitätsziel-Referenz-ID ("null" für leer).
+        new_n_id: Optional neue Nachhaltigkeitsziel-Referenz-ID ("null" für leer).
+        parent_name: Name des arc42-Projekts.
+    """
     try:
         old_strategy = validate_required(old_strategy, "old_strategy")
-        new_strategy = validate_required(new_strategy, "new_strategy")
     except ValueError as e:
         return _format_error("update_solution_strategy", e)
 
+    set_clauses = []
+    if new_strategy:
+        set_clauses.append("n.strategy = $new_strategy")
+    if new_qg_id:
+        set_clauses.append("n.qgId = $new_qg_id")
+    if new_n_id:
+        set_clauses.append("n.nId = $new_n_id")
+    if not set_clauses:
+        return "## Error\n\nMindestens ein neues Feld muss angegeben werden.\n"
+
     cypher = (
         "MATCH (d:Arc42 {name: $parent_name})-[:hatLoesung]->(n:LoesungsStrategie {strategy: $old_strategy}) "
-        "SET n.strategy = $new_strategy "
+        f"SET {', '.join(set_clauses)} "
         "RETURN n"
     )
     try:
@@ -65,6 +124,8 @@ def update_solution_strategy(old_strategy: str, new_strategy: str, *, parent_nam
             cypher,
             old_strategy=old_strategy,
             new_strategy=new_strategy,
+            new_qg_id=new_qg_id,
+            new_n_id=new_n_id,
             parent_name=parent_name,
         )
         if not records:
